@@ -16,6 +16,7 @@ import SearchResults from './pages/SearchResults';
 import NotFound from './pages/NotFound';
 import MainLayout from './components/common/MainLayout';
 import AuthLayout from './components/common/AuthLayout';
+import VerifyOTP from './pages/VerifyOTP';
 
 const PageLoader = () => (
   <div className="min-h-screen flex items-center justify-center bg-gray-50">
@@ -43,6 +44,8 @@ function App() {
       <Route element={<AuthLayout />}>
         <Route path="/login" element={<PublicRoute><Login /></PublicRoute>} />
         <Route path="/signup" element={<PublicRoute><Signup /></PublicRoute>} />
+        <Route path="/verify-otp" element={<VerifyOTP />} />
+
       </Route>
       <Route element={<MainLayout />}>
         <Route path="/" element={<ProtectedRoute><Home /></ProtectedRoute>} />
