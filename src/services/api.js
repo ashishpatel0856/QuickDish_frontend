@@ -43,8 +43,7 @@ api.interceptors.response.use(
   (response) => {
     console.log(`✅ API [${response.config.method?.toUpperCase()}] ${response.config.url}:`, response.data);
     
-    // 🔥 BACKEND SE WRAPPED RESPONSE KO UNWRAP KARO
-    // Agar response mein { data: {...}, timestamp: ..., error: ... } aaya hai
+   
     if (response.data && 
         response.data.data !== undefined && 
         typeof response.data.data === 'object' &&
@@ -124,6 +123,7 @@ export const restaurantAPI = {
   getAll: () => api.get('/restaurant'),
   getById: (id) => api.get(`/restaurant/${id}`),
   create: (data) => api.post('/restaurant/Create', data),
+
   update: (id, data) => api.put(`/restaurant/${id}`, data),
   delete: (id) => api.delete(`/restaurant/${id}`),
 };
@@ -134,6 +134,7 @@ export const foodAPI = {
   getByRestaurant: (restaurantId) => api.get(`/foods/restaurants/${restaurantId}`),
   search: (name) => api.get(`/foods/restaurants/search?name=${name}`),
   create: (data) => api.post('/foods/restaurants', data),
+
   update: (id, data) => api.put(`/foods/restaurants/${id}`, data),
   delete: (id) => api.delete(`/foods/restaurants/${id}`),
 };

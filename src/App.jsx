@@ -1,7 +1,13 @@
 import { Routes, Route, Navigate } from 'react-router-dom';
 import { useAuth } from './context/AuthContext';
 
-// Import all pages normally
+// 👈 OWNER IMPORTS (4 lines add karo)
+import OwnerLayout from './components/owner/OwnerLayout';
+import OwnerDashboard from './owner/Dashboard';
+import OwnerMenu from './owner/Menu';
+import OwnerOrders from './owner/Orders';
+
+// Existing imports same...
 import Home from './pages/Home';
 import Login from './pages/Login';
 import Signup from './pages/Signup';
@@ -24,10 +30,26 @@ const PageLoader = () => (
   </div>
 );
 
-const ProtectedRoute = ({ children }) => {
-  const { isAuthenticated, loading } = useAuth();
+const ProtectedRoute = ({ children, allowedRoles }) => {
+  const { isAuthenticated, user, loading } = useAuth();
+  
+  // 🔍 DEBUG
+  console.log('🔐 ProtectedRoute Check:', {
+    isAuthenticated,
+    userRoles: user?.roles,
+    allowedRoles,
+    hasAccess: allowedRoles?.some(role => user?.roles?.includes(role))
+  });
+
   if (loading) return <PageLoader />;
   if (!isAuthenticated) return <Navigate to="/login" replace />;
+  
+  if (allowedRoles && !allowedRoles.some(role => user?.roles?.includes(role))) {
+    console.log('❌ Access denied - redirecting to home');
+    return <Navigate to="/" replace />;
+  }
+  
+  console.log('✅ Access granted');
   return children;
 };
 
@@ -41,12 +63,14 @@ const PublicRoute = ({ children }) => {
 function App() {
   return (
     <Routes>
+      {/* Auth Routes - Same */}
       <Route element={<AuthLayout />}>
         <Route path="/login" element={<PublicRoute><Login /></PublicRoute>} />
         <Route path="/signup" element={<PublicRoute><Signup /></PublicRoute>} />
         <Route path="/verify-otp" element={<VerifyOTP />} />
-
       </Route>
+
+      {/* Customer Routes - Same */}
       <Route element={<MainLayout />}>
         <Route path="/" element={<ProtectedRoute><Home /></ProtectedRoute>} />
         <Route path="/restaurants" element={<ProtectedRoute><RestaurantList /></ProtectedRoute>} />
@@ -58,6 +82,14 @@ function App() {
         <Route path="/orders/:id" element={<ProtectedRoute><OrderDetail /></ProtectedRoute>} />
         <Route path="/profile" element={<ProtectedRoute><Profile /></ProtectedRoute>} />
       </Route>
+
+      {/* 👈 OWNER ROUTES (Bas yeh add karo) */}
+      <Route element={<OwnerLayout />}>
+        <Route path="/owner" element={<ProtectedRoute allowedRoles={['ROLE_RESTAURANT_OWNER']}><OwnerDashboard /></ProtectedRoute>} />
+        <Route path="/owner/menu" element={<ProtectedRoute allowedRoles={['ROLE_RESTAURANT_OWNER']}><OwnerMenu /></ProtectedRoute>} />
+        <Route path="/owner/orders" element={<ProtectedRoute allowedRoles={['ROLE_RESTAURANT_OWNER']}><OwnerOrders /></ProtectedRoute>} />
+      </Route>
+
       <Route path="*" element={<NotFound />} />
     </Routes>
   );
