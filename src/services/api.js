@@ -21,47 +21,33 @@ const processQueue = (error, token = null) => {
   failedQueue = [];
 };
 
-// ✅ Request interceptor
+// Request interceptor
 api.interceptors.request.use(
   (config) => {
     const token = localStorage.getItem('accessToken');
-    console.log('🔑 Token from localStorage:', token);
     
     if (token && token !== 'undefined' && token !== 'null' && token.trim() !== '') {
       config.headers.Authorization = `Bearer ${token}`;
-      console.log('✅ Authorization header set:', `Bearer ${token.substring(0, 20)}...`);
-    } else {
-      console.log('⚠️ No valid token found');
     }
     return config;
   },
   (error) => Promise.reject(error)
 );
 
-// ✅ RESPONSE INTERCEPTOR - YEH IMPORTANT HAI
+// Response interceptor
 api.interceptors.response.use(
   (response) => {
-    console.log(`✅ API [${response.config.method?.toUpperCase()}] ${response.config.url}:`, response.data);
-    
-   
+    // Unwrap response if wrapped
     if (response.data && 
         response.data.data !== undefined && 
         typeof response.data.data === 'object' &&
         response.data.timestamp !== undefined) {
-      console.log('📦 Unwrapping response...');
-      response.data = response.data.data; // Actual data nikaalo
+      response.data = response.data.data;
     }
-    
     return response;
   },
   async (error) => {
     const originalRequest = error.config;
-
-    console.error(`❌ API Error [${error.config?.method?.toUpperCase()}] ${error.config?.url}:`, {
-      status: error.response?.status,
-      data: error.response?.data,
-      message: error.message
-    });
 
     if (error.response?.status === 401 && !originalRequest._retry) {
       if (isRefreshing) {
@@ -101,6 +87,7 @@ api.interceptors.response.use(
         localStorage.removeItem('accessToken');
         localStorage.removeItem('refreshToken');
         localStorage.removeItem('user');
+        localStorage.removeItem('userRole');
         window.location.href = '/login';
         return Promise.reject(refreshError);
       } finally {
@@ -123,18 +110,20 @@ export const restaurantAPI = {
   getAll: () => api.get('/restaurant'),
   getById: (id) => api.get(`/restaurant/${id}`),
   create: (data) => api.post('/restaurant/Create', data),
-
   update: (id, data) => api.put(`/restaurant/${id}`, data),
   delete: (id) => api.delete(`/restaurant/${id}`),
+  getMyRestaurants: () => api.get('/restaurant/my-restaurants'),
 };
 
 export const foodAPI = {
   getAll: () => api.get('/foods/restaurants'),
   getById: (id) => api.get(`/foods/restaurants/${id}`),
-  getByRestaurant: (restaurantId) => api.get(`/foods/restaurants/${restaurantId}`),
+  // ✅ FIXED: Public menu for customers (NO AUTH REQUIRED)
+  getByRestaurant: (restaurantId) => api.get(`/foods/restaurant/${restaurantId}/public`),
+  // ✅ OWNER: Get all foods including pending
+  getMyRestaurantFoods: (restaurantId) => api.get(`/foods/restaurants/my-restaurant/${restaurantId}`),
   search: (name) => api.get(`/foods/restaurants/search?name=${name}`),
   create: (data) => api.post('/foods/restaurants', data),
-
   update: (id, data) => api.put(`/foods/restaurants/${id}`, data),
   delete: (id) => api.delete(`/foods/restaurants/${id}`),
 };

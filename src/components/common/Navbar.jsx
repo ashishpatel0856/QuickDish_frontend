@@ -1,143 +1,211 @@
-import { useState } from 'react';
-import { Link, useNavigate, useLocation } from 'react-router-dom';
+import { useState, useEffect } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
-import { useCart } from '../../context/CartContext';
-import { Search, ShoppingCart, User, Menu, X, MapPin, ChevronDown, LogOut, Heart, Package } from 'lucide-react';
+import { Search, MapPin, ChevronDown, ShoppingCart, HelpCircle, User } from 'lucide-react';
 
 const Navbar = () => {
-  const { user, logout, isAuthenticated } = useAuth();
-  const { cartCount } = useCart();
+  const { isAuthenticated, user, logout } = useAuth();
   const navigate = useNavigate();
-  const location = useLocation();
-  const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const [isProfileOpen, setIsProfileOpen] = useState(false);
-  const [searchQuery, setSearchQuery] = useState('');
+  const [showDropdown, setShowDropdown] = useState(false);
+  const [showLocationDropdown, setShowLocationDropdown] = useState(false);
+  const [scrolled, setScrolled] = useState(false);
 
-  const handleSearch = (e) => {
-    e.preventDefault();
-    if (searchQuery.trim()) {
-      navigate(`/search?name=${encodeURIComponent(searchQuery)}`);
-      setSearchQuery('');
-    }
+  // Role check
+  const userRoles = user?.roles || [];
+  const isOwner = userRoles.includes('ROLE_RESTAURANT_OWNER');
+
+  // Handle scroll effect
+  useEffect(() => {
+    const handleScroll = () => {
+      setScrolled(window.scrollY > 10);
+    };
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
+
+  const handleLogout = () => {
+    logout();
+    setShowDropdown(false);
+    navigate('/login');
   };
 
-  const navLinks = [
-    { path: '/', label: 'Home', icon: '🏠' },
-    { path: '/restaurants', label: 'Restaurants', icon: '🍽️' },
-    { path: '/orders', label: 'Orders', icon: '📦' },
-  ];
-
-  const isActive = (path) => location.pathname === path;
-
   return (
-    <nav className="fixed top-0 left-0 right-0 z-50 bg-white shadow-sm border-b border-gray-100">
+    <nav className={`sticky top-0 z-50 transition-all duration-300 ${
+      scrolled ? 'bg-white shadow-md' : 'bg-white'
+    }`}>
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex items-center justify-between h-16">
-          <Link to="/" className="flex items-center space-x-2">
-            <div className="w-10 h-10 bg-gradient-to-br from-primary-500 to-primary-600 rounded-xl flex items-center justify-center shadow-lg shadow-primary-500/30">
-              <span className="text-white text-xl font-bold">Q</span>
-            </div>
-            <span className="text-2xl font-bold gradient-text hidden sm:block">QuickDish</span>
-          </Link>
-
-          <form onSubmit={handleSearch} className="hidden md:flex flex-1 max-w-xl mx-8">
-            <div className="relative w-full">
-              <input
-                type="text"
-                placeholder="Search for food, restaurants..."
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                className="w-full pl-12 pr-4 py-2.5 bg-gray-100 border-0 rounded-full focus:ring-2 focus:ring-primary-500 focus:bg-white transition-all"
-              />
-              <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
-            </div>
-          </form>
-
-          <div className="flex items-center space-x-4">
-            <button className="hidden lg:flex items-center space-x-1 text-gray-600 hover:text-primary-600 transition-colors">
-              <MapPin className="w-5 h-5" />
-              <span className="text-sm font-medium">Delhi, India</span>
-              <ChevronDown className="w-4 h-4" />
-            </button>
-
-            <Link to="/cart" className="relative p-2 text-gray-600 hover:text-primary-600 hover:bg-primary-50 rounded-full transition-all">
-              <ShoppingCart className="w-6 h-6" />
-              {cartCount > 0 && (
-                <span className="absolute -top-1 -right-1 w-5 h-5 bg-accent-500 text-white text-xs font-bold rounded-full flex items-center justify-center animate-bounce">
-                  {cartCount > 9 ? '9+' : cartCount}
-                </span>
-              )}
+        <div className="flex justify-between items-center h-20">
+          
+          {/* Left: Logo + Location */}
+          <div className="flex items-center space-x-8">
+            {/* Logo */}
+            <Link to="/" className="flex items-center">
+              <span className="text-2xl font-bold text-orange-500 tracking-tight">
+                QuickDish
+              </span>
             </Link>
 
-            {isAuthenticated ? (
-              <div className="relative">
-                <button onClick={() => setIsProfileOpen(!isProfileOpen)} className="flex items-center space-x-2 p-2 rounded-full hover:bg-gray-100 transition-colors">
-                  <div className="w-8 h-8 bg-gradient-to-br from-primary-400 to-primary-600 rounded-full flex items-center justify-center text-white font-semibold">
-                    {user?.name?.charAt(0)?.toUpperCase() || 'U'}
+            {/* Location Selector - Swiggy Style */}
+            {isAuthenticated && (
+              <div className="relative hidden md:block">
+                <button 
+                  onClick={() => setShowLocationDropdown(!showLocationDropdown)}
+                  className="flex items-center space-x-2 text-gray-700 hover:text-orange-500 focus:outline-none"
+                >
+                  <MapPin className="w-5 h-5 text-orange-500" />
+                  <div className="flex flex-col items-start">
+                    <span className="text-xs font-medium text-gray-500">Deliver to</span>
+                    <span className="text-sm font-bold text-gray-800 flex items-center">
+                      Current Location
+                      <ChevronDown className="w-4 h-4 ml-1" />
+                    </span>
                   </div>
-                  <ChevronDown className="w-4 h-4 text-gray-500 hidden sm:block" />
                 </button>
 
-                {isProfileOpen && (
-                  <>
-                    <div className="fixed inset-0 z-10" onClick={() => setIsProfileOpen(false)} />
-                    <div className="absolute right-0 mt-2 w-56 bg-white rounded-2xl shadow-xl border border-gray-100 py-2 z-20 animate-fade-in-up">
-                      <div className="px-4 py-3 border-b border-gray-100">
-                        <p className="text-sm font-semibold text-gray-900">{user?.name}</p>
-                        <p className="text-xs text-gray-500 truncate">{user?.email}</p>
-                      </div>
-                      <Link to="/profile" onClick={() => setIsProfileOpen(false)} className="flex items-center px-4 py-2.5 text-sm text-gray-700 hover:bg-gray-50">
-                        <User className="w-4 h-4 mr-3 text-gray-400" /> Profile
-                      </Link>
-                      <Link to="/orders" onClick={() => setIsProfileOpen(false)} className="flex items-center px-4 py-2.5 text-sm text-gray-700 hover:bg-gray-50">
-                        <Package className="w-4 h-4 mr-3 text-gray-400" /> My Orders
-                      </Link>
-                      <Link to="/favorites" onClick={() => setIsProfileOpen(false)} className="flex items-center px-4 py-2.5 text-sm text-gray-700 hover:bg-gray-50">
-                        <Heart className="w-4 h-4 mr-3 text-gray-400" /> Favorites
-                      </Link>
-                      <hr className="my-2 border-gray-100" />
-                      <button onClick={() => { logout(); setIsProfileOpen(false); }} className="flex items-center w-full px-4 py-2.5 text-sm text-red-600 hover:bg-red-50">
-                        <LogOut className="w-4 h-4 mr-3" /> Logout
+                {showLocationDropdown && (
+                  <div className="absolute top-full left-0 mt-2 w-72 bg-white rounded-lg shadow-xl border py-4 z-50">
+                    <div className="px-4 pb-3 border-b">
+                      <h3 className="font-semibold text-gray-800">Select Location</h3>
+                    </div>
+                    <div className="p-2">
+                      <button className="w-full text-left px-4 py-3 rounded-lg hover:bg-gray-50 flex items-center space-x-3">
+                        <MapPin className="w-5 h-5 text-orange-500" />
+                        <div>
+                          <p className="font-medium text-gray-800">Detect Current Location</p>
+                          <p className="text-xs text-gray-500">Using GPS</p>
+                        </div>
                       </button>
                     </div>
-                  </>
+                  </div>
                 )}
               </div>
-            ) : (
-              <Link to="/login" className="hidden sm:flex items-center space-x-2 px-4 py-2 bg-primary-500 text-white rounded-full hover:bg-primary-600 transition-colors font-medium">
-                <User className="w-4 h-4" /><span>Login</span>
+            )}
+          </div>
+
+          {/* Center: Search Bar - Swiggy Style */}
+          {isAuthenticated && (
+            <div className="flex-1 max-w-2xl mx-8 hidden md:block">
+              <div className="relative">
+                <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
+                <input 
+                  type="text"
+                  placeholder="Search for restaurants, cuisines, or dishes..."
+                  className="w-full pl-12 pr-4 py-3 bg-gray-100 border-transparent focus:bg-white focus:border-orange-500 focus:ring-2 focus:ring-orange-200 rounded-lg transition-all outline-none"
+                  onClick={() => navigate('/search')}
+                  readOnly
+                />
+              </div>
+            </div>
+          )}
+
+          {/* Right: Navigation */}
+          <div className="flex items-center space-x-6">
+            
+            {/* Help - Swiggy Style */}
+            <Link to="/help" className="hidden lg:flex items-center space-x-2 text-gray-700 hover:text-orange-500 font-medium">
+              <HelpCircle className="w-5 h-5" />
+              <span>Help</span>
+            </Link>
+
+            {/* Cart - Swiggy Style */}
+            {isAuthenticated && (
+              <Link to="/cart" className="flex items-center space-x-2 text-gray-700 hover:text-orange-500 font-medium">
+                <div className="relative">
+                  <ShoppingCart className="w-6 h-6" />
+                  <span className="absolute -top-2 -right-2 bg-orange-500 text-white text-xs font-bold rounded-full w-5 h-5 flex items-center justify-center">
+                    0
+                  </span>
+                </div>
+                <span className="hidden lg:block">Cart</span>
               </Link>
             )}
 
-            <button onClick={() => setIsMenuOpen(!isMenuOpen)} className="lg:hidden p-2 text-gray-600 hover:text-primary-600 hover:bg-gray-100 rounded-full">
-              {isMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
-            </button>
-          </div>
-        </div>
+            {/* User / Sign In */}
+            {isAuthenticated ? (
+              <div className="relative">
+                <button 
+                  onClick={() => setShowDropdown(!showDropdown)}
+                  className="flex items-center space-x-2 text-gray-700 hover:text-orange-500 focus:outline-none"
+                >
+                  <div className="w-10 h-10 bg-gray-200 rounded-full flex items-center justify-center">
+                    <User className="w-5 h-5 text-gray-600" />
+                  </div>
+                  <div className="hidden lg:flex flex-col items-start">
+                    <span className="text-xs text-gray-500">Hey,</span>
+                    <span className="text-sm font-bold text-gray-800 flex items-center">
+                      {user?.name?.split(' ')[0] || 'User'}
+                      <ChevronDown className="w-4 h-4 ml-1" />
+                    </span>
+                  </div>
+                </button>
 
-        <form onSubmit={handleSearch} className="md:hidden pb-3">
-          <div className="relative">
-            <input type="text" placeholder="Search food & restaurants..." value={searchQuery} onChange={(e) => setSearchQuery(e.target.value)} className="w-full pl-10 pr-4 py-2 bg-gray-100 border-0 rounded-full focus:ring-2 focus:ring-primary-500 text-sm" />
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
-          </div>
-        </form>
-      </div>
+                {/* Dropdown Menu - Swiggy Style */}
+                {showDropdown && (
+                  <div className="absolute right-0 mt-3 w-64 bg-white rounded-lg shadow-xl border py-2 z-50">
+                    
+                    <div className="px-4 py-3 border-b">
+                      <p className="font-bold text-gray-800">{user?.name}</p>
+                      <p className="text-sm text-gray-500">{user?.email}</p>
+                    </div>
 
-      {isMenuOpen && (
-        <div className="lg:hidden bg-white border-t border-gray-100 animate-slide-in">
-          <div className="px-4 py-3 space-y-1">
-            {navLinks.map((link) => (
-              <Link key={link.path} to={link.path} onClick={() => setIsMenuOpen(false)} className={`flex items-center space-x-3 px-4 py-3 rounded-xl ${isActive(link.path) ? 'bg-primary-50 text-primary-600 font-medium' : 'text-gray-700 hover:bg-gray-50'}`}>
-                <span className="text-xl">{link.icon}</span><span>{link.label}</span>
+                    {/* Profile */}
+                    <Link 
+                      to="/profile"
+                      onClick={() => setShowDropdown(false)}
+                      className="flex items-center space-x-3 px-4 py-3 text-gray-700 hover:bg-gray-50"
+                    >
+                      <User className="w-5 h-5" />
+                      <span>Profile</span>
+                    </Link>
+
+                    {/* Orders */}
+                    <Link 
+                      to="/orders"
+                      onClick={() => setShowDropdown(false)}
+                      className="flex items-center space-x-3 px-4 py-3 text-gray-700 hover:bg-gray-50"
+                    >
+                      <ShoppingCart className="w-5 h-5" />
+                      <span>Orders</span>
+                    </Link>
+
+                    {/* 👈 OWNER ONLY: Dashboard */}
+                    {isOwner && (
+                      <Link 
+                        to="/owner/dashboard"
+                        onClick={() => setShowDropdown(false)}
+                        className="flex items-center space-x-3 px-4 py-3 text-orange-600 hover:bg-orange-50 font-medium"
+                      >
+                        <span className="w-5 h-5 flex items-center justify-center">🏪</span>
+                        <span>Owner Dashboard</span>
+                      </Link>
+                    )}
+
+                    <hr className="my-2" />
+
+                    {/* Logout */}
+                    <button 
+                      onClick={handleLogout}
+                      className="flex items-center space-x-3 w-full text-left px-4 py-3 text-red-600 hover:bg-red-50"
+                    >
+                      <span className="w-5 h-5 flex items-center justify-center">🚪</span>
+                      <span>Logout</span>
+                    </button>
+                  </div>
+                )}
+              </div>
+            ) : (
+              /* Sign In Button - Swiggy Style */
+              <Link 
+                to="/login" 
+                className="flex items-center space-x-2 text-gray-700 hover:text-orange-500 font-medium"
+              >
+                <User className="w-6 h-6" />
+                <span className="hidden lg:block">Sign In</span>
               </Link>
-            ))}
-            <hr className="my-2 border-gray-100" />
-            <button onClick={() => { logout(); setIsMenuOpen(false); }} className="flex items-center space-x-3 w-full px-4 py-3 text-red-600 hover:bg-red-50 rounded-xl">
-              <LogOut className="w-5 h-5" /><span>Logout</span>
-            </button>
+            )}
           </div>
         </div>
-      )}
+      </div>
     </nav>
   );
 };

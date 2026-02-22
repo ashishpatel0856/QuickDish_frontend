@@ -20,19 +20,18 @@ const handleSubmit = async (e) => {
   e.preventDefault();
   setLoading(true);
   setError('');
-  
   const result = await login(formData);
-  
   if (result.success) {
-    // 🔥 FIX: Parsed roles check karo
-    const userRoles = result.user?.roles || [];
-    console.log('User roles after login:', userRoles);
+    const userRoles = result.user?.roles || [];  
     
-    if (userRoles.includes('ROLE_RESTAURANT_OWNER')) {
-      console.log('Redirecting to /owner');
+    console.log(' User roles:', userRoles);
+        const isOwner = userRoles.includes('ROLE_RESTAURANT_OWNER');
+    
+    if (isOwner) {
+      console.log('🏪 Owner detected, going to /owner');
       navigate('/owner');
     } else {
-      console.log('Redirecting to /');
+      console.log('👤 Customer detected, going to /');
       navigate('/');
     }
   } else {
