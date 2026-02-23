@@ -18,7 +18,10 @@ export const CartProvider = ({ children }) => {
 
   useEffect(() => {
     if (isAuthenticated && user?.id) loadCart();
-    else setCartItems([]);
+    else {
+      setCartItems([]);
+      setCartSummary({ total: 0, itemCount: 0 });
+    }
   }, [isAuthenticated, user?.id]);
 
   const loadCart = async () => {
@@ -28,10 +31,16 @@ export const CartProvider = ({ children }) => {
       const response = await cartAPI.getByUser(user.id);
       const cartData = response.data;
       
-      setCartItems(cartData?.items || []);
+      // ✅ FIX: Handle both array and object response
+      const items = Array.isArray(cartData) ? cartData : (cartData?.items || []);
+      const total = Array.isArray(cartData) 
+        ? items.reduce((sum, item) => sum + (item.totalPrice || 0), 0)
+        : (cartData?.totalAmount || 0);
+      
+      setCartItems(items);
       setCartSummary({
-        total: cartData?.totalAmount || 0,
-        itemCount: cartData?.itemCount || 0
+        total: total,
+        itemCount: items.length
       });
     } catch (error) {
       console.error('Failed to load cart:', error);
@@ -50,32 +59,36 @@ export const CartProvider = ({ children }) => {
       await loadCart();
       return { success: true };
     } catch (error) {
+      console.error('Add to cart error:', error);
       return { success: false, error: error.response?.data?.message || 'Failed to add' };
     } finally {
       setLoading(false);
     }
   };
 
-  const updateQuantity = async (cartId, quantity) => {
+  const updateQuantity = async (cartItemId, quantity) => {
+    if (quantity < 1) return removeFromCart(cartItemId);
     try {
       setLoading(true);
-      await cartAPI.update(cartId, quantity);
+      await cartAPI.update(cartItemId, quantity);
       await loadCart();
       return { success: true };
     } catch (error) {
+      console.error('Update quantity error:', error);
       return { success: false, error: error.response?.data?.message };
     } finally {
       setLoading(false);
     }
   };
 
-  const removeFromCart = async (cartId) => {
+  const removeFromCart = async (cartItemId) => {
     try {
       setLoading(true);
-      await cartAPI.delete(cartId);
+      await cartAPI.delete(cartItemId);
       await loadCart();
       return { success: true };
     } catch (error) {
+      console.error('Remove from cart error:', error);
       return { success: false, error: error.response?.data?.message };
     } finally {
       setLoading(false);
@@ -87,10 +100,10 @@ export const CartProvider = ({ children }) => {
     setCartSummary({ total: 0, itemCount: 0 });
   };
 
-  // ✅ LINE 83-86: Updated with null safety
+  // Calculate from items for real-time updates
   const cartCount = (cartItems || []).reduce((sum, item) => sum + (item.quantity || 0), 0);
   const cartTotal = (cartItems || []).reduce((sum, item) => {
-    const price = item.unitPrice || item.foodItem?.price || item.price || 0;
+    const price = item.unitPrice || item.foodItem?.price || 0;
     return sum + (price * (item.quantity || 0));
   }, 0);
 

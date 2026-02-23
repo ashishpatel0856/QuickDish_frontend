@@ -23,15 +23,11 @@ const handleSubmit = async (e) => {
   const result = await login(formData);
   if (result.success) {
     const userRoles = result.user?.roles || [];  
-    
-    console.log(' User roles:', userRoles);
-        const isOwner = userRoles.includes('ROLE_RESTAURANT_OWNER');
+            const isOwner = userRoles.includes('ROLE_RESTAURANT_OWNER');
     
     if (isOwner) {
-      console.log('🏪 Owner detected, going to /owner');
       navigate('/owner');
     } else {
-      console.log('👤 Customer detected, going to /');
       navigate('/');
     }
   } else {

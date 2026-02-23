@@ -11,7 +11,7 @@ const Signup = () => {
     email: '', 
     password: '', 
     phone: '',
-    role: 'ROLE_CUSTOMER' // 👈 Default customer
+    role: 'ROLE_CUSTOMER' 
   });
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -50,7 +50,6 @@ const Signup = () => {
 
       <form onSubmit={handleSubmit} className="space-y-5">
         
-        {/* 👈 ROLE SELECTION - Swiggy style */}
         <div>
           <label className="block text-sm font-medium text-gray-700 mb-3">I want to join as</label>
           <div className="grid grid-cols-2 gap-4">
@@ -92,7 +91,6 @@ const Signup = () => {
           </div>
         </div>
 
-        {/* Name */}
         <div>
           <label className="block text-sm font-medium text-gray-700 mb-2">Full Name</label>
           <div className="relative">
@@ -103,7 +101,6 @@ const Signup = () => {
           </div>
         </div>
 
-        {/* Email */}
         <div>
           <label className="block text-sm font-medium text-gray-700 mb-2">Email Address</label>
           <div className="relative">
@@ -114,7 +111,6 @@ const Signup = () => {
           </div>
         </div>
 
-        {/* Phone */}
         <div>
           <label className="block text-sm font-medium text-gray-700 mb-2">Phone Number</label>
           <div className="relative">
@@ -125,7 +121,6 @@ const Signup = () => {
           </div>
         </div>
 
-        {/* Password */}
         <div>
           <label className="block text-sm font-medium text-gray-700 mb-2">Password</label>
           <div className="relative">

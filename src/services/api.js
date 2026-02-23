@@ -21,7 +21,6 @@ const processQueue = (error, token = null) => {
   failedQueue = [];
 };
 
-// Request interceptor
 api.interceptors.request.use(
   (config) => {
     const token = localStorage.getItem('accessToken');
@@ -34,10 +33,8 @@ api.interceptors.request.use(
   (error) => Promise.reject(error)
 );
 
-// Response interceptor
 api.interceptors.response.use(
   (response) => {
-    // Unwrap response if wrapped
     if (response.data && 
         response.data.data !== undefined && 
         typeof response.data.data === 'object' &&
@@ -87,7 +84,6 @@ api.interceptors.response.use(
         localStorage.removeItem('accessToken');
         localStorage.removeItem('refreshToken');
         localStorage.removeItem('user');
-        localStorage.removeItem('userRole');
         window.location.href = '/login';
         return Promise.reject(refreshError);
       } finally {
@@ -98,7 +94,6 @@ api.interceptors.response.use(
   }
 );
 
-// API exports
 export const authAPI = {
   signup: (data) => api.post('/auth/signup', data),
   login: (data) => api.post('/auth/login', data),
@@ -118,9 +113,7 @@ export const restaurantAPI = {
 export const foodAPI = {
   getAll: () => api.get('/foods/restaurants'),
   getById: (id) => api.get(`/foods/restaurants/${id}`),
-  // ✅ FIXED: Public menu for customers (NO AUTH REQUIRED)
   getByRestaurant: (restaurantId) => api.get(`/foods/restaurant/${restaurantId}/public`),
-  // ✅ OWNER: Get all foods including pending
   getMyRestaurantFoods: (restaurantId) => api.get(`/foods/restaurants/my-restaurant/${restaurantId}`),
   search: (name) => api.get(`/foods/restaurants/search?name=${name}`),
   create: (data) => api.post('/foods/restaurants', data),
@@ -128,11 +121,24 @@ export const foodAPI = {
   delete: (id) => api.delete(`/foods/restaurants/${id}`),
 };
 
+// ✅ FIXED CART API
 export const cartAPI = {
   getByUser: (userId) => api.get(`/carts?userId=${userId}`),
-  add: (data) => api.post('/carts', data),
-  update: (cartId, quantity) => api.put(`/carts/${cartId}?quantity=${quantity}`),
-  delete: (cartId) => api.delete(`/carts/${cartId}`),
+  
+  // userId in URL, foodItemId + quantity in body
+  add: (data) => api.post(`/carts?userId=${data.userId}`, {
+    foodItemId: data.foodItemId,
+    quantity: data.quantity
+  }),
+  
+  // Backend uses /items/{cartItemId}
+  update: (cartItemId, quantity) => api.put(`/carts/items/${cartItemId}?quantity=${quantity}`),
+  
+  // Backend uses /items/{cartItemId}
+  delete: (cartItemId) => api.delete(`/carts/items/${cartItemId}`),
+  
+  // Clear entire cart
+  clear: (userId) => api.delete(`/carts?userId=${userId}`),
 };
 
 export const orderAPI = {

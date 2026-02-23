@@ -2,15 +2,19 @@ import { Routes, Route, Navigate } from 'react-router-dom';
 import { useAuth } from './context/AuthContext';
 
 import OwnerLayout from './components/owner/OwnerLayout';
-import OwnerDashboard from './components/owner/Dashboard';    
-import OwnerMenu from './components/owner/Menu';              
-import OwnerOrders from './components/owner/Orders';        
+import MainLayout from './components/common/MainLayout';
+import AuthLayout from './components/common/AuthLayout';
 
 import Home from './pages/Home';
 import Login from './pages/Login';
 import Signup from './pages/Signup';
+import VerifyOTP from './pages/VerifyOTP';
 import RestaurantList from './pages/RestaurantList';
 import RestaurantDetail from './pages/RestaurantDetail';
+import AddRestaurant from './pages/AddRestaurant';        
+import EditRestaurant from './pages/EditRestaurant';      
+import AddFood from './pages/AddFood';                    
+import EditFood from './pages/EditFood';                  
 import Cart from './pages/Cart';
 import Checkout from './pages/Checkout';
 import Orders from './pages/Orders';
@@ -18,13 +22,14 @@ import OrderDetail from './pages/OrderDetail';
 import Profile from './pages/Profile';
 import SearchResults from './pages/SearchResults';
 import NotFound from './pages/NotFound';
-import MainLayout from './components/common/MainLayout';
-import AuthLayout from './components/common/AuthLayout';
-import VerifyOTP from './pages/VerifyOTP';
+
+import OwnerDashboard from './components/owner/Dashboard';
+import OwnerMenu from './components/owner/Menu';
+import OwnerOrders from './components/owner/Orders';
 
 const PageLoader = () => (
   <div className="min-h-screen flex items-center justify-center bg-gray-50">
-    <div className="animate-spin rounded-full h-16 w-16 border-t-4 border-b-4 border-primary-500"></div>
+    <div className="animate-spin rounded-full h-16 w-16 border-t-4 border-b-4 border-orange-500"></div>
   </div>
 );
 
@@ -53,18 +58,42 @@ const PublicRoute = ({ children }) => {
 function App() {
   return (
     <Routes>
-      {/* Auth Routes */}
       <Route element={<AuthLayout />}>
         <Route path="/login" element={<PublicRoute><Login /></PublicRoute>} />
         <Route path="/signup" element={<PublicRoute><Signup /></PublicRoute>} />
         <Route path="/verify-otp" element={<VerifyOTP />} />
       </Route>
 
-      {/* Customer Routes */}
       <Route element={<MainLayout />}>
         <Route path="/" element={<ProtectedRoute><Home /></ProtectedRoute>} />
         <Route path="/restaurants" element={<ProtectedRoute><RestaurantList /></ProtectedRoute>} />
+        
+        <Route path="/restaurant/add" element={
+          <ProtectedRoute allowedRoles={['ROLE_RESTAURANT_OWNER']}>
+            <AddRestaurant />
+          </ProtectedRoute>
+        } />
+        
+        <Route path="/restaurant/:id/edit" element={
+          <ProtectedRoute allowedRoles={['ROLE_RESTAURANT_OWNER']}>
+            <EditRestaurant />
+          </ProtectedRoute>
+        } />
+        
+        <Route path="/restaurant/:id/add-food" element={
+          <ProtectedRoute allowedRoles={['ROLE_RESTAURANT_OWNER']}>
+            <AddFood />
+          </ProtectedRoute>
+        } />
+        
+        <Route path="/restaurant/:id/edit-food/:foodId" element={
+          <ProtectedRoute allowedRoles={['ROLE_RESTAURANT_OWNER']}>
+            <EditFood />
+          </ProtectedRoute>
+        } />
+        
         <Route path="/restaurant/:id" element={<ProtectedRoute><RestaurantDetail /></ProtectedRoute>} />
+        
         <Route path="/search" element={<ProtectedRoute><SearchResults /></ProtectedRoute>} />
         <Route path="/cart" element={<ProtectedRoute><Cart /></ProtectedRoute>} />
         <Route path="/checkout" element={<ProtectedRoute><Checkout /></ProtectedRoute>} />
@@ -73,7 +102,6 @@ function App() {
         <Route path="/profile" element={<ProtectedRoute><Profile /></ProtectedRoute>} />
       </Route>
 
-      {/* 👈 OWNER ROUTES - FIXED NESTED */}
       <Route path="/owner" element={
         <ProtectedRoute allowedRoles={['ROLE_RESTAURANT_OWNER']}>
           <OwnerLayout />
@@ -81,8 +109,8 @@ function App() {
       }>
         <Route index element={<OwnerDashboard />} />
         <Route path="dashboard" element={<OwnerDashboard />} />
-        <Route path="menu" element={<OwnerMenu />} />
-        <Route path="orders" element={<OwnerOrders />} />
+        <Route path="menu/:restaurantId" element={<OwnerMenu />} />
+        <Route path="orders/:restaurantId" element={<OwnerOrders />} />
       </Route>
 
       <Route path="*" element={<NotFound />} />
