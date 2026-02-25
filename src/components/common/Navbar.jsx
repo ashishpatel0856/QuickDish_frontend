@@ -10,11 +10,11 @@ const Navbar = () => {
   const [showLocationDropdown, setShowLocationDropdown] = useState(false);
   const [scrolled, setScrolled] = useState(false);
 
-  // Role check
+ 
   const userRoles = user?.roles || [];
   const isOwner = userRoles.includes('ROLE_RESTAURANT_OWNER');
 
-  // Handle scroll effect
+  
   useEffect(() => {
     const handleScroll = () => {
       setScrolled(window.scrollY > 10);
@@ -36,16 +36,14 @@ const Navbar = () => {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-20">
           
-          {/* Left: Logo + Location */}
+          
           <div className="flex items-center space-x-8">
-            {/* Logo */}
             <Link to="/" className="flex items-center">
               <span className="text-2xl font-bold text-orange-500 tracking-tight">
                 QuickDish
               </span>
             </Link>
 
-            {/* Location Selector - Swiggy Style */}
             {isAuthenticated && (
               <div className="relative hidden md:block">
                 <button 
@@ -82,7 +80,6 @@ const Navbar = () => {
             )}
           </div>
 
-          {/* Center: Search Bar - Swiggy Style */}
           {isAuthenticated && (
             <div className="flex-1 max-w-2xl mx-8 hidden md:block">
               <div className="relative">
@@ -98,16 +95,11 @@ const Navbar = () => {
             </div>
           )}
 
-          {/* Right: Navigation */}
           <div className="flex items-center space-x-6">
-            
-            {/* Help - Swiggy Style */}
-            <Link to="/help" className="hidden lg:flex items-center space-x-2 text-gray-700 hover:text-orange-500 font-medium">
+                        <Link to="/help" className="hidden lg:flex items-center space-x-2 text-gray-700 hover:text-orange-500 font-medium">
               <HelpCircle className="w-5 h-5" />
               <span>Help</span>
             </Link>
-
-            {/* Cart - Swiggy Style */}
             {isAuthenticated && (
               <Link to="/cart" className="flex items-center space-x-2 text-gray-700 hover:text-orange-500 font-medium">
                 <div className="relative">
@@ -120,7 +112,7 @@ const Navbar = () => {
               </Link>
             )}
 
-            {/* User / Sign In */}
+
             {isAuthenticated ? (
               <div className="relative">
                 <button 
@@ -139,7 +131,7 @@ const Navbar = () => {
                   </div>
                 </button>
 
-                {/* Dropdown Menu - Swiggy Style */}
+
                 {showDropdown && (
                   <div className="absolute right-0 mt-3 w-64 bg-white rounded-lg shadow-xl border py-2 z-50">
                     
@@ -147,8 +139,6 @@ const Navbar = () => {
                       <p className="font-bold text-gray-800">{user?.name}</p>
                       <p className="text-sm text-gray-500">{user?.email}</p>
                     </div>
-
-                    {/* Profile */}
                     <Link 
                       to="/profile"
                       onClick={() => setShowDropdown(false)}
@@ -158,7 +148,6 @@ const Navbar = () => {
                       <span>Profile</span>
                     </Link>
 
-                    {/* Orders */}
                     <Link 
                       to="/orders"
                       onClick={() => setShowDropdown(false)}
@@ -168,7 +157,6 @@ const Navbar = () => {
                       <span>Orders</span>
                     </Link>
 
-                    {/* 👈 OWNER ONLY: Dashboard */}
                     {isOwner && (
                       <Link 
                         to="/owner/dashboard"
@@ -182,7 +170,6 @@ const Navbar = () => {
 
                     <hr className="my-2" />
 
-                    {/* Logout */}
                     <button 
                       onClick={handleLogout}
                       className="flex items-center space-x-3 w-full text-left px-4 py-3 text-red-600 hover:bg-red-50"
@@ -194,7 +181,7 @@ const Navbar = () => {
                 )}
               </div>
             ) : (
-              /* Sign In Button - Swiggy Style */
+              
               <Link 
                 to="/login" 
                 className="flex items-center space-x-2 text-gray-700 hover:text-orange-500 font-medium"

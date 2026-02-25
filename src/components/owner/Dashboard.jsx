@@ -16,11 +16,10 @@ const Dashboard = () => {
 
   const fetchMyRestaurants = async () => {
     try {
-      const res = await restaurantAPI.getMyRestaurants(); // ✅ Use specific API
+      const res = await restaurantAPI.getMyRestaurants(); 
       setRestaurants(res.data);
     } catch (err) {
       console.error('Failed to fetch:', err);
-      // Fallback to filter if API fails
       try {
         const allRes = await restaurantAPI.getAll();
         const myRestaurants = allRes.data.filter(r => r.owner?.id === user?.id);
@@ -43,7 +42,6 @@ const Dashboard = () => {
 
   return (
     <div className="p-6 max-w-7xl mx-auto">
-      {/* Header */}
       <div className="flex justify-between items-center mb-8">
         <div>
           <h1 className="text-3xl font-bold text-gray-900">My Restaurants</h1>
@@ -75,7 +73,7 @@ const Dashboard = () => {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {restaurants.map((restaurant) => (
             <div key={restaurant.id} className="bg-white rounded-2xl shadow-sm overflow-hidden hover:shadow-lg transition-shadow">
-              {/* Restaurant Image */}
+             
               <div className="relative h-48">
                 <img 
                   src={Array.isArray(restaurant.image) ? restaurant.image[0] : restaurant.image || '/default-restaurant.jpg'}
@@ -105,7 +103,8 @@ const Dashboard = () => {
                   <span>{restaurant.category}</span>
                 </div>
 
-                {/* Action Buttons - Swiggy Style */}
+               
+
                 <div className="grid grid-cols-2 gap-3 mb-3">
                   <button
                     onClick={() => navigate(`/owner/menu/${restaurant.id}`)}
@@ -123,7 +122,8 @@ const Dashboard = () => {
                   </button>
                 </div>
 
-                {/* Secondary Actions */}
+               
+
                 <div className="flex space-x-2 pt-3 border-t">
                   <button
                     onClick={() => navigate(`/restaurant/${restaurant.id}`)}

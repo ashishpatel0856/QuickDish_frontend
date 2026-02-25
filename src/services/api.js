@@ -1,5 +1,4 @@
 import axios from 'axios';
-
 const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:8080/api/v1';
 
 const api = axios.create({
@@ -121,24 +120,16 @@ export const foodAPI = {
   delete: (id) => api.delete(`/foods/restaurants/${id}`),
 };
 
-// ✅ FIXED CART API
 export const cartAPI = {
   getByUser: (userId) => api.get(`/carts?userId=${userId}`),
-  
-  // userId in URL, foodItemId + quantity in body
   add: (data) => api.post(`/carts?userId=${data.userId}`, {
     foodItemId: data.foodItemId,
     quantity: data.quantity
   }),
   
-  // Backend uses /items/{cartItemId}
   update: (cartItemId, quantity) => api.put(`/carts/items/${cartItemId}?quantity=${quantity}`),
-  
-  // Backend uses /items/{cartItemId}
   delete: (cartItemId) => api.delete(`/carts/items/${cartItemId}`),
-  
-  // Clear entire cart
-  clear: (userId) => api.delete(`/carts?userId=${userId}`),
+    clear: (userId) => api.delete(`/carts?userId=${userId}`),
 };
 
 export const orderAPI = {

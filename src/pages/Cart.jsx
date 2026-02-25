@@ -34,7 +34,6 @@ const Cart = () => {
   const platformFee = 5;
   const tax = cartTotal * 0.05;
   const total = cartTotal + deliveryFee + platformFee + tax;
-
   if (loading && cartItems.length === 0) {
     return (
       <div className="min-h-screen bg-gray-50 flex items-center justify-center">

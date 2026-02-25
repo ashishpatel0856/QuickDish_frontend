@@ -29,7 +29,7 @@ export const useAuthStore = create(
         set({ user: null, isAuthenticated: false });
       },
 
-      // Getters
+      
       getUserRole: () => get().user?.role || localStorage.getItem('userRole'),
       isOwner: () => {
         const role = get().getUserRole();
@@ -44,7 +44,6 @@ export const useAuthStore = create(
         return role === 'ROLE_CUSTOMER';
       },
 
-      // Update user
       setUser: (userData) => set({ user: userData }),
     }),
     {
