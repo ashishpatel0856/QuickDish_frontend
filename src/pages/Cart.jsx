@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useCart } from '../context/CartContext';
-import { Trash2, Plus, Minus, ShoppingBag, ArrowRight, Loader2 } from 'lucide-react';
+import { Trash2, Plus, Minus, ShoppingBag, ArrowRight, Loader2, IndianRupeeIcon } from 'lucide-react';
 
 const Cart = () => {
   const navigate = useNavigate();
@@ -90,9 +90,10 @@ const Cart = () => {
                         <p className="text-gray-500 text-sm mt-1 line-clamp-1">
                           {item.foodItem?.description || ''}
                         </p>
-                        <p className="text-orange-600 font-bold mt-2">
-                          ₹{item.unitPrice || item.foodItem?.price}
-                        </p>
+                      <p className="flex items-center mt-2 text-orange-600 font-bold">
+                        <IndianRupeeIcon className="w-4 h-4 mr-0" />
+                        {item.unitPrice || item.foodItem?.price}
+                      </p>
                       </div>
                       <button 
                         onClick={() => handleRemove(item.id)} 
@@ -129,8 +130,11 @@ const Cart = () => {
                         </button>
                       </div>
                       
-                      {/* Item Total */}
-                      <p className="font-bold text-lg">₹{(item.totalPrice || 0).toFixed(2)}</p>
+                     {/* Item Total Price */}
+                        <p className="flex items-center mt-2 text-orange-600 font-bold">
+                          <IndianRupeeIcon className="w-4 h-4 mr-0" />
+                          {(item.totalPrice || 0).toFixed(2)}
+                        </p>
                     </div>
                   </div>
                 </div>
@@ -145,38 +149,66 @@ const Cart = () => {
               
               <div className="space-y-3 mb-6">
                 <div className="flex justify-between text-gray-600">
-                  <span>Item Total</span>
-                  <span>₹{cartTotal.toFixed(2)}</span>
-                </div>
-                <div className="flex justify-between text-gray-600">
+                  <span>Item Total Price</span>
+                <span className="flex items-center font-semibold">
+                  <IndianRupeeIcon className="w-4 h-4 mr-0" />
+                  {cartTotal.toFixed(2)}
+                </span>           
+               </div>
+
+               <div className="flex justify-between text-gray-600">
                   <span>Delivery Fee</span>
-                  <span className={deliveryFee === 0 ? 'text-green-600 font-medium' : ''}>
-                    {deliveryFee === 0 ? 'FREE' : `₹${deliveryFee}`}
+                  <span
+                    className={`flex items-center ${
+                      deliveryFee === 0 ? 'text-green-600 font-medium' : ''
+                    }`}
+                  >
+                    {deliveryFee === 0 ? (
+                      'FREE'
+                    ) : (
+                      <>
+                        <IndianRupeeIcon className="w-3 h-3 mr-0" />
+                        {deliveryFee}
+                      </>
+                    )}
                   </span>
                 </div>
-                <div className="flex justify-between text-gray-600">
-                  <span>Platform Fee</span>
-                  <span>₹{platformFee}</span>
-                </div>
-                <div className="flex justify-between text-gray-600">
-                  <span>GST (5%)</span>
-                  <span>₹{tax.toFixed(2)}</span>
-                </div>
-                
-                {deliveryFee === 0 && (
-                  <p className="text-sm text-green-600 bg-green-50 p-2 rounded">
-                    🎉 You saved ₹40 on delivery!
-                  </p>
-                )}
-                
-                <div className="border-t border-gray-200 pt-4">
-                  <div className="flex justify-between font-bold text-lg text-gray-900">
-                    <span>To Pay</span>
-                    <span>₹{total.toFixed(2)}</span>
-                  </div>
-                </div>
+
+                    <div className="flex justify-between text-gray-600">
+                      <span>Platform Fee</span>
+                      <span className="flex items-center">
+                        <IndianRupeeIcon className="w-3 h-3 mr-0" />
+                        {platformFee}
+                      </span>
+                    </div>
+
+                    <div className="flex justify-between text-gray-600">
+                      <span>GST (5%)</span>
+                      <span className="flex items-center">
+                        <IndianRupeeIcon className="w-3 h-3 mr-0" />
+                        {tax.toFixed(2)}
+                      </span>
+                    </div>
+
+                      {deliveryFee === 0 && (
+                        <p className="mt-2 flex items-center text-sm text-green-600 bg-green-50 p-2 rounded">
+                          You saved  <IndianRupeeIcon className='w-3 h-3 mr-0'/>40 on delivery!
+                        </p>
+                      )}
+
+                      <div className="border-t border-gray-200 pt-4">
+                        <div className="flex justify-between items-center font-bold text-lg text-gray-900">
+                          <span>To Pay</span>
+                          <span className="flex items-center">
+                            <IndianRupeeIcon className="w-4 h-4 mr-0" />
+                            {total.toFixed(2)}
+                          </span>
+                        </div>
+                      </div>
               </div>
               
+
+
               <button 
                 onClick={() => navigate('/checkout')} 
                 disabled={loading}

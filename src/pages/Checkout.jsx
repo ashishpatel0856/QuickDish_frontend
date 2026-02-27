@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useCart } from '../context/CartContext';
 import { orderAPI } from '../services/api';
-import { MapPin, CreditCard, Truck, Check, Loader2 } from 'lucide-react';
+import { MapPin, CreditCard, Truck, Check, Loader2,IndianRupeeIcon } from 'lucide-react';
 
 const Checkout = () => {
   const navigate = useNavigate();
@@ -101,12 +101,50 @@ const Checkout = () => {
                   <div key={item.id} className="flex justify-between text-sm"><span className="text-gray-600">{item.foodItem?.name} x {item.quantity}</span><span className="font-medium">₹{(item.foodItem?.price || 0) * item.quantity}</span></div>
                 ))}
               </div>
-              <div className="border-t border-gray-200 pt-4 space-y-2">
-                <div className="flex justify-between text-gray-600"><span>Subtotal</span><span>₹{cartTotal.toFixed(2)}</span></div>
-                <div className="flex justify-between text-gray-600"><span>Delivery</span><span>{deliveryFee === 0 ? 'FREE' : `₹${deliveryFee}`}</span></div>
-                <div className="flex justify-between text-gray-600"><span>Tax</span><span>₹{tax.toFixed(2)}</span></div>
-                <div className="border-t border-gray-200 pt-2 flex justify-between font-bold text-lg"><span>Total</span><span>₹{total.toFixed(2)}</span></div>
+            <div className="border-t border-gray-200 pt-4 space-y-2">
+              <div className="flex justify-between text-gray-600">
+                <span>Subtotal</span>
+                <span className="flex items-center">
+                  <IndianRupeeIcon className="w-3 h-3 mr-0" />
+                  {cartTotal.toFixed(2)}
+                </span>
               </div>
+
+              <div className="flex justify-between text-gray-600">
+                <span>Delivery</span>
+                <span
+                  className={`flex items-center ${
+                    deliveryFee === 0 ? 'text-green-600 font-medium' : ''
+                  }`}
+                >
+                  {deliveryFee === 0 ? (
+                    'FREE'
+                  ) : (
+                    <>
+                      <IndianRupeeIcon className="w-3 h-3 mr-0" />
+                      {deliveryFee}
+                    </>
+                  )}
+                </span>
+              </div>
+
+              <div className="flex justify-between text-gray-600">
+                <span>Tax</span>
+                <span className="flex items-center">
+                  <IndianRupeeIcon className="w-3 h-3 mr-0" />
+                  {tax.toFixed(2)}
+                </span>
+              </div>
+
+              <div className="border-t border-gray-200 pt-2 flex justify-between font-bold text-lg">
+                <span>Total</span>
+                <span className="flex items-center">
+                  <IndianRupeeIcon className="w-4 h-4 mr-0" />
+                  {total.toFixed(2)}
+                </span>
+              </div>
+
+            </div>
             </div>
           </div>
         </div>

@@ -3,7 +3,7 @@ import { useParams, useNavigate, Link } from 'react-router-dom';
 import { restaurantAPI, foodAPI } from '../services/api';
 import { useAuth } from '../context/AuthContext';
 import { useCart } from '../context/CartContext';
-import { Star, Clock, MapPin, Plus, Check, ShoppingBag, Heart, Share2, Info } from 'lucide-react';
+import { Star, Clock, MapPin, Plus, Check, ShoppingBag, Heart, Share2, Info ,IndianRupeeIcon } from 'lucide-react';
 
 const RestaurantDetail = () => {  
   const { id } = useParams();
@@ -156,19 +156,21 @@ const RestaurantDetail = () => {
             <span className="flex items-center bg-green-100 text-green-800 px-2 py-1 rounded font-medium">
               <Star className="w-4 h-4 mr-1 fill-current" /> 4.5
             </span>
-            <span className="text-gray-600">•</span>
-            <span className="text-gray-600">{restaurant.category}</span>
-            <span className="text-gray-600">•</span>
+            <span className="text-gray-800">•</span>
+            <span className="text-gray-800">{restaurant.category}</span>
+            <span className="text-gray-800">•</span>
             <span className="flex items-center text-gray-600">
               <Clock className="w-4 h-4 mr-1" /> 30-40 min
             </span>
             <span className="text-gray-600">•</span>
-            <span className="flex items-center text-gray-600">
+            <span className="flex items-center text-gray-800">
               <MapPin className="w-4 h-4 mr-1" /> {restaurant.location || restaurant.address}
             </span>
             <span className="text-gray-600">•</span>
-            <span className="text-gray-600">₹200 for two</span>
-            
+            <span className="flex items-center text-gray-800">
+              <IndianRupeeIcon className="w-4 h-4 mr-0 text-gray-600" />
+              200 for two
+            </span>            
             {isOwner() && (
               <div className="ml-auto flex gap-2">
                 <button 
@@ -190,7 +192,7 @@ const RestaurantDetail = () => {
           {/* Offers */}
           <div className="mt-3 flex gap-2 overflow-x-auto pb-2">
             <span className="flex items-center px-3 py-1.5 bg-orange-50 text-orange-700 rounded-full text-sm whitespace-nowrap">
-              <Info className="w-4 h-4 mr-1" /> 50% off up to ₹100
+              <Info className="w-4 h-4 mr-1" /> 50% off up to 100
             </span>
             <span className="flex items-center px-3 py-1.5 bg-blue-50 text-blue-700 rounded-full text-sm whitespace-nowrap">
               FREE DELIVERY
@@ -205,10 +207,10 @@ const RestaurantDetail = () => {
           <h2 className="text-2xl font-bold text-gray-900">Menu ({foods.length})</h2>
           <div className="flex gap-2">
             <button className="px-4 py-2 bg-white border rounded-lg text-sm font-medium text-gray-600 hover:bg-gray-50">
-              Veg Only 🥬
+              Veg Only 
             </button>
             <button className="px-4 py-2 bg-white border rounded-lg text-sm font-medium text-gray-600 hover:bg-gray-50">
-              Bestseller 🔥
+              Bestseller 
             </button>
           </div>
         </div>
@@ -272,10 +274,15 @@ const RestaurantDetail = () => {
                           <h3 className="font-bold text-gray-900 text-lg">{food.name}</h3>
                           <p className="text-gray-500 text-sm mt-1 line-clamp-2">{food.description}</p>
                           
-                          <div className="flex items-center gap-3 mt-2">
-                            <span className="text-lg font-bold text-gray-900">₹{food.price}</span>
+                          <div className="flex items-center gap-2 mt-2">
+                            <span className="flex items-center text-lg font-bold text-gray-900">
+                              <IndianRupeeIcon className="w-4 h-4 text-gray-600 mr-0" />
+                              {food.price}
+                            </span>
                             {food.quantity > 0 && (
-                              <span className="text-xs text-gray-500">{food.quantity} left</span>
+                              <span className="text-xs text-gray-500">
+                                {food.quantity} left
+                              </span>
                             )}
                           </div>
                         </div>
