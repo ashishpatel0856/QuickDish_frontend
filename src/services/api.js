@@ -132,12 +132,16 @@ export const cartAPI = {
     clear: (userId) => api.delete(`/carts?userId=${userId}`),
 };
 
+// services/api.js - SIRF YEH PART UPDATE KARO (baaki sab same rahega)
+
 export const orderAPI = {
   getAll: () => api.get('/orders/customers'),
   getById: (id) => api.get(`/orders/customers/${id}`),
   create: (data) => api.post('/orders/customers', data),
-  updateStatus: (id, status) => api.put(`/orders/customers/${id}`, { status }),
+  updateStatus: (id, status) => api.patch(`/orders/customers/${id}/status?status=${status}`),
+  verifyPayment: (orderId) => api.get(`/orders/customers/${orderId}`),
 };
+
 
 export const reviewAPI = {
   getAll: () => api.get('/review'),

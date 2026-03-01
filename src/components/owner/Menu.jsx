@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { foodAPI, restaurantAPI } from '../../services/api';  // ✅ FIXED: Added restaurantAPI
+import { foodAPI, restaurantAPI } from '../../services/api';  
 import { useAuth } from '../../context/AuthContext';
 
 const Menu = () => {
@@ -14,7 +14,7 @@ const Menu = () => {
 
   const fetchRestaurants = async () => {
     try {
-      const res = await restaurantAPI.getAll();  // ✅ Now works!
+      const res = await restaurantAPI.getAll();  
       const myRestaurants = res.data.filter(r => r.owner?.id === user?.id);
       setRestaurants(myRestaurants);
       if (myRestaurants.length > 0) {

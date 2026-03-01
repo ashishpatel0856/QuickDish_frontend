@@ -1,11 +1,13 @@
 import { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
-import { Search, MapPin, ChevronDown, ShoppingCart, HelpCircle, User } from 'lucide-react';
+import { Search, MapPin, ChevronDown, ShoppingCart, HelpCircle, User,LogOut ,LayoutDashboard} from 'lucide-react';
+import { useCart } from '../../context/CartContext';
 
 const Navbar = () => {
   const { isAuthenticated, user, logout } = useAuth();
   const navigate = useNavigate();
+  const { cartCount } = useCart();
   const [showDropdown, setShowDropdown] = useState(false);
   const [showLocationDropdown, setShowLocationDropdown] = useState(false);
   const [scrolled, setScrolled] = useState(false);
@@ -105,7 +107,7 @@ const Navbar = () => {
                 <div className="relative">
                   <ShoppingCart className="w-6 h-6" />
                   <span className="absolute -top-2 -right-2 bg-orange-500 text-white text-xs font-bold rounded-full w-5 h-5 flex items-center justify-center">
-                    0
+                    {cartCount} 
                   </span>
                 </div>
                 <span className="hidden lg:block">Cart</span>
@@ -163,7 +165,9 @@ const Navbar = () => {
                         onClick={() => setShowDropdown(false)}
                         className="flex items-center space-x-3 px-4 py-3 text-orange-600 hover:bg-orange-50 font-medium"
                       >
-                        <span className="w-5 h-5 flex items-center justify-center">🏪</span>
+                        <span className="w-5 h-5 flex items-center justify-center">
+                          <LayoutDashboard className="w-5 h-5" />
+                        </span>
                         <span>Owner Dashboard</span>
                       </Link>
                     )}
@@ -174,7 +178,9 @@ const Navbar = () => {
                       onClick={handleLogout}
                       className="flex items-center space-x-3 w-full text-left px-4 py-3 text-red-600 hover:bg-red-50"
                     >
-                      <span className="w-5 h-5 flex items-center justify-center">🚪</span>
+                      <span className="w-5 h-5 flex items-center justify-center">
+                        <LogOut className="w-5 h-5" />
+                      </span>
                       <span>Logout</span>
                     </button>
                   </div>

@@ -23,6 +23,9 @@ import Profile from './pages/Profile';
 import SearchResults from './pages/SearchResults';
 import NotFound from './pages/NotFound';
 
+import PaymentSuccess from './pages/PaymentSuccess';
+import PaymentFailed from './pages/PaymentFailed';
+
 import OwnerDashboard from './components/owner/Dashboard';
 import OwnerMenu from './components/owner/Menu';
 import OwnerOrders from './components/owner/Orders';
@@ -97,6 +100,10 @@ function App() {
         <Route path="/search" element={<ProtectedRoute><SearchResults /></ProtectedRoute>} />
         <Route path="/cart" element={<ProtectedRoute><Cart /></ProtectedRoute>} />
         <Route path="/checkout" element={<ProtectedRoute><Checkout /></ProtectedRoute>} />
+        
+        <Route path="/payment/success" element={<ProtectedRoute><PaymentSuccess /></ProtectedRoute>} />
+        <Route path="/payment/failed" element={<ProtectedRoute><PaymentFailed /></ProtectedRoute>} />
+        
         <Route path="/orders" element={<ProtectedRoute><Orders /></ProtectedRoute>} />
         <Route path="/orders/:id" element={<ProtectedRoute><OrderDetail /></ProtectedRoute>} />
         <Route path="/profile" element={<ProtectedRoute><Profile /></ProtectedRoute>} />

@@ -6,9 +6,9 @@ const OwnerSidebar = () => {
   const { logout } = useAuth();
 
   const menuItems = [
-    { path: '/owner', label: 'Dashboard', icon: '📊' },
-    { path: '/owner/menu', label: 'My Menu', icon: '🍔' },
-    { path: '/owner/orders', label: 'Orders', icon: '📦' },
+    { path: '/owner', label: 'Dashboard', icon: '' },
+    { path: '/owner/menu', label: 'My Menu', icon: '' },
+    { path: '/owner/orders', label: 'Orders', icon: '' },
   ];
 
   return (

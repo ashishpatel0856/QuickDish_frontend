@@ -25,19 +25,20 @@ const Profile = () => {
     }
   };
 
-  const handleSave = async () => {
-    setSaving(true);
-    try {
-      await userAPI.updateProfile(formData);
-      updateUser({ ...user, ...formData });
-      setEditing(false);
-      alert('Profile updated successfully!');
-    } catch (error) {
-      alert('Failed to update profile');
-    } finally {
-      setSaving(false);
-    }
-  };
+ const handleSave = async () => {
+  setSaving(true);
+  try {
+    const response = await userAPI.updateProfile(formData);
+    updateUser({ ...user, ...formData }); 
+    setEditing(false);
+    alert('Profile updated successfully!');
+  } catch (error) {
+    console.error('Profile update failed:', error);
+    alert('Failed to update profile'); 
+  } finally {
+    setSaving(false);
+  }
+};
 
   return (
     <div className="min-h-screen bg-gray-50 py-8">

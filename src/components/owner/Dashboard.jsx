@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { restaurantAPI } from '../../services/api';
 import { useAuth } from '../../context/AuthContext';
 import { Link, useNavigate } from 'react-router-dom';
-import { Plus, Edit, UtensilsCrossed, ShoppingBag, Star } from 'lucide-react';
+import { Plus, Edit, UtensilsCrossed, ShoppingBag, Star ,LayoutDashboard } from 'lucide-react';
 
 const Dashboard = () => {
   const [restaurants, setRestaurants] = useState([]);
