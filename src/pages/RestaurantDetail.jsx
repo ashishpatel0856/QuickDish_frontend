@@ -46,34 +46,33 @@ const RestaurantDetail = () => {
     fetchData();
   }, [id]);
 
-  const handleAddToCart = async (foodItem) => {
-    if (!isAuthenticated) {
-      navigate('/login', { state: { from: `/restaurant/${id}` } });
-      return;
-    }
+ const handleAddToCart = async (foodItem) => {
+  if (!isAuthenticated) {
+    navigate('/login', { state: { from: `/restaurant/${id}` } });
+    return;
+  }
 
-    setAddingToCart({ ...addingToCart, [foodItem.id]: true });
-    
-    const result = await addToCart(foodItem.id, 1);
-    
-    if (result.success) {
-      setAddedItems({ ...addedItems, [foodItem.id]: true });
-      setCartCount(prev => prev + 1);
-      setTimeout(() => {
-        setAddedItems(prev => ({ ...prev, [foodItem.id]: false }));
-      }, 2000);
-    } else {
-      alert(result.error || 'Failed to add to cart');
-    }
-    
-    setAddingToCart({ ...addingToCart, [foodItem.id]: false });
-  };
+  setAddingToCart({ ...addingToCart, [foodItem.id]: true });
+  const result = await addToCart(foodItem.id, 1, id);
+  
+  if (result.success) {
+    setAddedItems({ ...addedItems, [foodItem.id]: true });
+    setCartCount(prev => prev + 1);
+    setTimeout(() => {
+      setAddedItems(prev => ({ ...prev, [foodItem.id]: false }));
+    }, 2000);
+  } else {
+    alert(result.error || 'Failed to add to cart');
+  }
+  
+  setAddingToCart({ ...addingToCart, [foodItem.id]: false });
+};
+
 
   const isOwner = () => {
     return user?.role?.includes('ROLE_RESTAURANT_OWNER') && restaurant?.owner?.id === user?.id;
   };
 
-  // Helper: Get first image from array or string
   const getImage = (imageData) => {
     if (!imageData) return 'https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=400&q=80';
     if (Array.isArray(imageData) && imageData.length > 0) return imageData[0];

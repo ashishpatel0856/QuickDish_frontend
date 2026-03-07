@@ -132,7 +132,6 @@ export const cartAPI = {
     clear: (userId) => api.delete(`/carts?userId=${userId}`),
 };
 
-// services/api.js - SIRF YEH PART UPDATE KARO (baaki sab same rahega)
 
 export const orderAPI = {
   getAll: () => api.get('/orders/customers'),

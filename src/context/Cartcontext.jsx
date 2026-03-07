@@ -16,6 +16,11 @@ export const CartProvider = ({ children }) => {
   const [loading, setLoading] = useState(false);
   const { user, isAuthenticated } = useAuth();
 
+    useEffect(() => {
+    const storedId = localStorage.getItem('currentRestaurantId');
+    console.log(" CartContext mounted. Stored Restaurant ID:", storedId);
+  }, []);
+
   useEffect(() => {
     if (isAuthenticated && user?.id) loadCart();
     else {
@@ -31,7 +36,6 @@ export const CartProvider = ({ children }) => {
       const response = await cartAPI.getByUser(user.id);
       const cartData = response.data;
       
-      // ✅ FIX: Handle both array and object response
       const items = Array.isArray(cartData) ? cartData : (cartData?.items || []);
       const total = Array.isArray(cartData) 
         ? items.reduce((sum, item) => sum + (item.totalPrice || 0), 0)
@@ -51,20 +55,34 @@ export const CartProvider = ({ children }) => {
     }
   };
 
-  const addToCart = async (foodItemId, quantity = 1) => {
-    if (!isAuthenticated) return { success: false, error: 'Please login first' };
-    try {
-      setLoading(true);
-      await cartAPI.add({ foodItemId, quantity, userId: user.id });
-      await loadCart();
-      return { success: true };
-    } catch (error) {
-      console.error('Add to cart error:', error);
-      return { success: false, error: error.response?.data?.message || 'Failed to add' };
-    } finally {
-      setLoading(false);
-    }
-  };
+
+const addToCart = async (foodItemId, quantity = 1, restaurantId) => {
+  console.log("🔥🔥🔥 addToCart CALLED 🔥🔥🔥");
+  console.log("  foodItemId:", foodItemId);
+  console.log("  quantity:", quantity);
+  console.log("  restaurantId:", restaurantId); // 🔥 YEH CHECK KARO
+  
+  if (!isAuthenticated) return { success: false, error: 'Please login first' };
+  
+  if (restaurantId) {
+    localStorage.setItem('currentRestaurantId', restaurantId);
+    console.log("✅ Stored in localStorage:", restaurantId);
+  } else {
+    console.warn("⚠️⚠️⚠️ NO RESTAURANT ID PROVIDED! ⚠️⚠️⚠️");
+    console.trace(); // Call stack dikhayega kahan se call hua
+  }
+  try {
+    setLoading(true);
+    await cartAPI.add({ foodItemId, quantity, userId: user.id });
+    await loadCart();
+    return { success: true };
+  } catch (error) {
+    console.error('Add to cart error:', error);
+    return { success: false, error: error.response?.data?.message || 'Failed to add' };
+  } finally {
+    setLoading(false);
+  }
+};
 
   const updateQuantity = async (cartItemId, quantity) => {
     if (quantity < 1) return removeFromCart(cartItemId);
