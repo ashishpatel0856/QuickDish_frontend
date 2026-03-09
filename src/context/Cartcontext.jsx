@@ -1,4 +1,4 @@
-import { createContext, useContext, useState, useCallback, useEffect } from 'react';
+import { createContext, useContext, useState, useCallback, useEffect, useRef } from 'react';
 import { cartAPI } from '../services/api';
 import { useAuth } from './AuthContext';
 
@@ -15,25 +15,37 @@ export const CartProvider = ({ children }) => {
   const [cartSummary, setCartSummary] = useState({ total: 0, itemCount: 0 });
   const [loading, setLoading] = useState(false);
   const { user, isAuthenticated } = useAuth();
+  
+  // 🔥🔥🔥 FIX: Skip loading flag
+  const skipNextLoad = useRef(false);
 
-    useEffect(() => {
+  const currentUserId = user?.id;
+
+  useEffect(() => {
     const storedId = localStorage.getItem('currentRestaurantId');
-    console.log(" CartContext mounted. Stored Restaurant ID:", storedId);
+    console.log("CartContext mounted. Stored Restaurant ID:", storedId);
   }, []);
 
   useEffect(() => {
-    if (isAuthenticated && user?.id) loadCart();
+    // 🔥🔥🔥 Skip agar clearCart() se flag set hua hai
+    if (skipNextLoad.current) {
+      skipNextLoad.current = false;
+      console.log("⏭️ Skipping loadCart due to clearCart");
+      return;
+    }
+    
+    if (isAuthenticated && currentUserId) loadCart();
     else {
       setCartItems([]);
       setCartSummary({ total: 0, itemCount: 0 });
     }
-  }, [isAuthenticated, user?.id]);
+  }, [isAuthenticated, currentUserId]);
 
   const loadCart = async () => {
-    if (!user?.id) return;
+    if (!currentUserId) return;
     try {
       setLoading(true);
-      const response = await cartAPI.getByUser(user.id);
+      const response = await cartAPI.getByUser(currentUserId);
       const cartData = response.data;
       
       const items = Array.isArray(cartData) ? cartData : (cartData?.items || []);
@@ -55,34 +67,25 @@ export const CartProvider = ({ children }) => {
     }
   };
 
-
-const addToCart = async (foodItemId, quantity = 1, restaurantId) => {
-  console.log("🔥🔥🔥 addToCart CALLED 🔥🔥🔥");
-  console.log("  foodItemId:", foodItemId);
-  console.log("  quantity:", quantity);
-  console.log("  restaurantId:", restaurantId); // 🔥 YEH CHECK KARO
-  
-  if (!isAuthenticated) return { success: false, error: 'Please login first' };
-  
-  if (restaurantId) {
-    localStorage.setItem('currentRestaurantId', restaurantId);
-    console.log("✅ Stored in localStorage:", restaurantId);
-  } else {
-    console.warn("⚠️⚠️⚠️ NO RESTAURANT ID PROVIDED! ⚠️⚠️⚠️");
-    console.trace(); // Call stack dikhayega kahan se call hua
-  }
-  try {
-    setLoading(true);
-    await cartAPI.add({ foodItemId, quantity, userId: user.id });
-    await loadCart();
-    return { success: true };
-  } catch (error) {
-    console.error('Add to cart error:', error);
-    return { success: false, error: error.response?.data?.message || 'Failed to add' };
-  } finally {
-    setLoading(false);
-  }
-};
+  const addToCart = async (foodItemId, quantity = 1, restaurantId) => {
+    if (!isAuthenticated) return { success: false, error: 'Please login first' };
+    
+    if (restaurantId) {
+      localStorage.setItem('currentRestaurantId', restaurantId);
+    }
+    
+    try {
+      setLoading(true);
+      await cartAPI.add({ foodItemId, quantity, userId: currentUserId });
+      await loadCart();
+      return { success: true };
+    } catch (error) {
+      console.error('Add to cart error:', error);
+      return { success: false, error: error.response?.data?.message || 'Failed to add' };
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const updateQuantity = async (cartItemId, quantity) => {
     if (quantity < 1) return removeFromCart(cartItemId);
@@ -113,17 +116,35 @@ const addToCart = async (foodItemId, quantity = 1, restaurantId) => {
     }
   };
 
-  const clearCart = () => {
+  // 🔥🔥🔥 FIX: Proper clearCart with skip flag
+  const clearCart = useCallback(async () => {
+    const userId = currentUserId;
+    
+    // 🔥 Pehle flag set karo
+    skipNextLoad.current = true;
+    
+    // 🔥 State immediately clear karo
     setCartItems([]);
     setCartSummary({ total: 0, itemCount: 0 });
-  };
+    localStorage.removeItem('currentRestaurantId');
+    
+    console.log("🧹 Cart cleared locally, skipNextLoad = true");
+    
+    // Backend call async (fail bhi ho sakti hai, par UI clear ho chuki)
+    if (userId) {
+      try {
+        await cartAPI.clear(userId);
+        console.log("✅ Backend cart cleared");
+      } catch (err) {
+        console.error('Backend clear failed:', err);
+        // Local already cleared, so it's fine
+      }
+    }
+  }, [currentUserId]);
 
-  // Calculate from items for real-time updates
-  const cartCount = (cartItems || []).reduce((sum, item) => sum + (item.quantity || 0), 0);
-  const cartTotal = (cartItems || []).reduce((sum, item) => {
-    const price = item.unitPrice || item.foodItem?.price || 0;
-    return sum + (price * (item.quantity || 0));
-  }, 0);
+  // Values cartSummary se lo
+  const cartCount = cartSummary.itemCount;
+  const cartTotal = cartSummary.total;
 
   return (
     <CartContext.Provider value={{ 

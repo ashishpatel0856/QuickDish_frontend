@@ -126,10 +126,9 @@ export const cartAPI = {
     foodItemId: data.foodItemId,
     quantity: data.quantity
   }),
-  
   update: (cartItemId, quantity) => api.put(`/carts/items/${cartItemId}?quantity=${quantity}`),
   delete: (cartItemId) => api.delete(`/carts/items/${cartItemId}`),
-    clear: (userId) => api.delete(`/carts?userId=${userId}`),
+  clear: (userId) => api.delete(`/carts/clear/${userId}`),
 };
 
 
@@ -139,6 +138,19 @@ export const orderAPI = {
   create: (data) => api.post('/orders/customers', data),
   updateStatus: (id, status) => api.patch(`/orders/customers/${id}/status?status=${status}`),
   verifyPayment: (orderId) => api.get(`/orders/customers/${orderId}`),
+   forceVerifyPayment: (orderId) => api.post(`/orders/customers/${orderId}/verify-payment`),
+
+    getRestaurantOrders: (restaurantId, status) => 
+    api.get(`/orders/customers/restaurant/${restaurantId}${status ? `?status=${status}` : ''}`),
+    
+  acceptOrder: (orderId) => 
+    api.put(`/order/scustomers//${orderId}/accept`),
+    
+  rejectOrder: (orderId, reason) => 
+    api.put(`/orderscustomers/${orderId}/reject?reason=${encodeURIComponent(reason)}`),
+    
+  updateOrderStatus: (orderId, status) => 
+    api.put(`/orderscustomers/${orderId}/status?status=${status}`)
 };
 
 

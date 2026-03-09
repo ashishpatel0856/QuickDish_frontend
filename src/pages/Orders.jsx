@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { orderAPI } from '../services/api';
-import { Package, Clock, CheckCircle, ChevronRight, RefreshCw ,IndianRupeeIcon} from 'lucide-react';
+import { Package, Clock, CheckCircle, ChevronRight, RefreshCw, IndianRupeeIcon } from 'lucide-react';
 
 const Orders = () => {
   const [orders, setOrders] = useState([]);
@@ -33,6 +33,19 @@ const Orders = () => {
     return <RefreshCw className="w-5 h-5" />;
   };
 
+  const formatDate = (dateString) => {
+    if (!dateString) return 'Date not available';
+    try {
+      const date = new Date(dateString);
+      if (isNaN(date.getTime())) return 'Invalid Date';
+      return date.toLocaleDateString('en-US', { 
+        weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' 
+      });
+    } catch (e) {
+      return 'Invalid Date';
+    }
+  };
+
   if (loading) return <div className="min-h-screen bg-gray-50 flex items-center justify-center"><div className="animate-spin rounded-full h-16 w-16 border-t-4 border-b-4 border-primary-500"></div></div>;
 
   if (orders.length === 0) return (
@@ -59,14 +72,18 @@ const Orders = () => {
                     <h3 className="font-bold text-lg text-gray-900">Order #{order.id}</h3>
                     <span className={`px-3 py-1 rounded-full text-xs font-medium flex items-center gap-1 ${getStatusColor(order.status)}`}>{getStatusIcon(order.status)}{order.status?.replace(/_/g, ' ')}</span>
                   </div>
-                  <p className="text-gray-500 text-sm mb-3">{new Date(order.createdAt).toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}</p>
+                  
+                  <p className="text-gray-500 text-sm mb-3">
+                    {formatDate(order.orderDate)}
+                  </p>
+                  
                   <div className="flex items-center gap-4 text-sm text-gray-600">
-                    <span>{order.items?.length || 0} items</span>
+                    <span>{order.orderItems?.length || 0} items</span>
                     <span>•</span>
                     <span className="flex items-center font-medium">
                         <IndianRupeeIcon className="w-3 h-3 mr-0" />
                         {Number(order.totalPrice).toFixed(2)}
-                  </span>
+                    </span>
                   </div>
                 </div>
                 <ChevronRight className="w-6 h-6 text-gray-400" />

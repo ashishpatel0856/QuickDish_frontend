@@ -1,12 +1,14 @@
 import { useEffect, useState } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
+import { useCart } from '../context/CartContext';  // 🔥 Import karo
 import { orderAPI } from '../services/api';
 import { CheckCircle, Loader2, Clock } from 'lucide-react';
 
 const PaymentSuccess = () => {
   const [searchParams] = useSearchParams();
   const navigate = useNavigate();
-  const [status, setStatus] = useState('verifying');  // status of payment
+  const { clearCart } = useCart();  // 🔥 useCart se clearCart lo
+  const [status, setStatus] = useState('verifying');  
   const orderId = searchParams.get('orderId');
 
   useEffect(() => {
@@ -20,6 +22,8 @@ const PaymentSuccess = () => {
   const verifyPayment = async () => {
     try {
       let attempts = 0;
+      const maxAttempts = 15;
+      
       const checkInterval = setInterval(async () => {
         try {
           const response = await orderAPI.verifyPayment(orderId);
@@ -28,11 +32,48 @@ const PaymentSuccess = () => {
           if (order.paid === true || order.paymentStatus === 'PAID') {
             clearInterval(checkInterval);
             setStatus('success');
+            
+            // 🔥🔥🔥 CART CLEAR KARO YAHAN!
+            try {
+              await clearCart();
+              localStorage.removeItem('currentRestaurantId');
+              console.log("✅ Cart cleared after payment success");
+            } catch (cartErr) {
+              console.error("Cart clear failed:", cartErr);
+            }
+            
             setTimeout(() => navigate(`/orders/${orderId}`), 2000);
+            return;
           }
           
           attempts++;
-          if (attempts > 15) { 
+          
+          if (attempts === 5) {
+            console.log("Normal verify failed, trying force verify...");
+            try {
+              const forceResponse = await orderAPI.forceVerifyPayment(orderId);
+              if (forceResponse.data?.paid || forceResponse.data?.paymentStatus === 'PAID') {
+                clearInterval(checkInterval);
+                setStatus('success');
+                
+                // 🔥🔥🔥 YAHAN BHI CART CLEAR KARO!
+                try {
+                  await clearCart();
+                  localStorage.removeItem('currentRestaurantId');
+                  console.log("✅ Cart cleared after force verify success");
+                } catch (cartErr) {
+                  console.error("Cart clear failed:", cartErr);
+                }
+                
+                setTimeout(() => navigate(`/orders/${orderId}`), 2000);
+                return;
+              }
+            } catch (forceErr) {
+              console.error("Force verify failed:", forceErr);
+            }
+          }
+          
+          if (attempts > maxAttempts) {
             clearInterval(checkInterval);
             setStatus('failed');
           }

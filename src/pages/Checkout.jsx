@@ -12,7 +12,7 @@ const Checkout = () => {
   const [orderData, setOrderData] = useState({
     deliveryAddress: '',
     notes: '',
-    paymentMethod: 'COD'
+    paymentMethod: 'Cash On Delivery'
   });
 
   const deliveryFee = cartTotal > 200 ? 0 : 40;
@@ -68,11 +68,14 @@ const Checkout = () => {
 
       if (orderData.paymentMethod === 'ONLINE' && response.data?.paymentUrl) {
         window.location.href = response.data.paymentUrl;
-      } else {
-        clearCart();
-        localStorage.removeItem('currentRestaurantId');
-        navigate(`/order-success/${response.data?.id}`);
-      }
+        } else {
+          await clearCart();
+          localStorage.removeItem('currentRestaurantId');
+          
+          setTimeout(() => {
+            navigate(`/order-success/${response.data?.id}`);
+          }, 100);
+        }
     } catch (error) {
       console.error(' Order error:', error);
       alert('Failed to place order: ' + (error.response?.data?.message || error.message));
