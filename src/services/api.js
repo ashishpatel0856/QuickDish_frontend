@@ -3,7 +3,7 @@ const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:8080/api/
 
 const api = axios.create({
   baseURL: API_BASE_URL,
-  timeout: 10000,
+  timeout: 30000,
   headers: {
     'Content-Type': 'application/json',
   },
@@ -144,13 +144,13 @@ export const orderAPI = {
     api.get(`/orders/customers/restaurant/${restaurantId}${status ? `?status=${status}` : ''}`),
     
   acceptOrder: (orderId) => 
-    api.put(`/order/scustomers//${orderId}/accept`),
+    api.put(`/orders/customers//${orderId}/accept`),
     
   rejectOrder: (orderId, reason) => 
-    api.put(`/orderscustomers/${orderId}/reject?reason=${encodeURIComponent(reason)}`),
+    api.put(`/orders/customers/${orderId}/reject?reason=${encodeURIComponent(reason)}`),
     
   updateOrderStatus: (orderId, status) => 
-    api.put(`/orderscustomers/${orderId}/status?status=${status}`)
+    api.put(`/orders/customers/${orderId}/status?status=${status}`)
 };
 
 

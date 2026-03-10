@@ -59,7 +59,9 @@ const PublicRoute = ({ children }) => {
 };
 
 function App() {
+
   return (
+    
     <Routes>
       <Route element={<AuthLayout />}>
         <Route path="/login" element={<PublicRoute><Login /></PublicRoute>} />
@@ -109,7 +111,7 @@ function App() {
         <Route path="/profile" element={<ProtectedRoute><Profile /></ProtectedRoute>} />
       </Route>
 
-      <Route path="/owner" element={
+      <Route path="/owner/*" element={
         <ProtectedRoute allowedRoles={['ROLE_RESTAURANT_OWNER']}>
           <OwnerLayout />
         </ProtectedRoute>

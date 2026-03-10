@@ -1,39 +1,51 @@
 import { useState, useEffect } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
 import { orderAPI } from '../services/api';
-import { 
-  ChevronLeft, MapPin, Phone, Clock, Package, CheckCircle, 
+import {
+  ChevronLeft, MapPin, Phone, Clock, Package, CheckCircle,
   Truck, Home, IndianRupeeIcon, Loader2, RefreshCw, Star,
   Utensils, MessageSquare, HelpCircle, Receipt
 } from 'lucide-react';
+import { useWebSocket } from '../hooks/useWebSocket';
+import { useAuth } from '../context/AuthContext';
 
+
+// websocket for live updates
 const OrderDetail = () => {
   const { id } = useParams();
   const navigate = useNavigate();
   const [order, setOrder] = useState(null);
   const [loading, setLoading] = useState(true);
+  const { user } = useAuth();
+
+  const { connected } = useWebSocket(user?.id, null, (message) => {
+    if (message.data?.id === Number(id)) {
+      setOrder(message.data);
+      console.log(' Live update:', message.data.status);
+    }
+  });
 
   useEffect(() => {
     fetchOrderDetail();
-    
     const interval = setInterval(() => {
       if (order && order.status !== 'DELIVERED' && order.status !== 'CANCELLED') {
-        fetchOrderDetail(false); 
+        fetchOrderDetail(false);
       }
-    }, 10000); 
-    
+    }, 10000);
+
     return () => clearInterval(interval);
   }, [id]);
+
 
   const fetchOrderDetail = async (showLoading = true) => {
     if (showLoading) setLoading(true);
     try {
       const response = await orderAPI.getById(id);
       setOrder(response.data);
-    } catch (error) { 
-      console.error('Failed to fetch order:', error); 
-    } finally { 
-      if (showLoading) setLoading(false); 
+    } catch (error) {
+      console.error('Failed to fetch order:', error);
+    } finally {
+      if (showLoading) setLoading(false);
     }
   };
 
@@ -46,11 +58,11 @@ const OrderDetail = () => {
       { status: 'OUT_FOR_DELIVERY', label: 'On the Way', icon: Truck, time: '15 mins' },
       { status: 'DELIVERED', label: 'Delivered', icon: Home, time: 'Delivered' }
     ];
-    
+
     const currentIndex = steps.findIndex(s => s.status === currentStatus);
-    return steps.map((step, index) => ({ 
-      ...step, 
-      completed: index <= currentIndex, 
+    return steps.map((step, index) => ({
+      ...step,
+      completed: index <= currentIndex,
       active: index === currentIndex,
       pending: index > currentIndex
     }));
@@ -87,17 +99,23 @@ const OrderDetail = () => {
 
   return (
     <div className="min-h-screen bg-gray-100">
-      {/* 🔥🔥🔥 Sticky Header */}
+      {/* Sticky Header */}
       <div className="sticky top-0 z-50 bg-white shadow-sm">
         <div className="max-w-4xl mx-auto px-4 py-4 flex items-center justify-between">
-          <button 
-            onClick={() => navigate('/orders')} 
+          <button
+            onClick={() => navigate('/orders')}
             className="flex items-center text-gray-700 hover:text-gray-900"
           >
             <ChevronLeft className="w-6 h-6" />
           </button>
-          <h1 className="text-lg font-bold text-gray-900">Order #{order.orderNumber || order.id}</h1>
-          <button 
+          <div className="flex items-center gap-2">
+            <h1 className="text-lg font-bold text-gray-900">Order #{order?.orderNumber || order?.id}</h1>
+            {connected && (
+              <span className="w-2 h-2 bg-green-500 rounded-full animate-pulse" title="Live tracking" />
+            )}
+          </div>
+
+          <button
             onClick={() => fetchOrderDetail(false)}
             className="text-orange-500"
           >
@@ -107,17 +125,16 @@ const OrderDetail = () => {
       </div>
 
       <div className="max-w-4xl mx-auto px-4 py-6 space-y-4">
-        
-        {/* 🔥🔥🔥 Live Status Card */}
+        {/*  Live Status Card */}
         <div className="bg-white rounded-2xl shadow-sm overflow-hidden">
           {/* Progress Bar */}
           <div className="h-1 bg-gray-200 w-full">
-            <div 
+            <div
               className={`h-full ${getStatusColor(order.status)} transition-all duration-500`}
               style={{ width: `${progressPercent}%` }}
             ></div>
           </div>
-          
+
           <div className="p-6">
             <div className="flex items-center justify-between mb-4">
               <div>
@@ -149,14 +166,14 @@ const OrderDetail = () => {
                 {statusSteps.map((step, index) => {
                   const Icon = step.icon;
                   const isLast = index === statusSteps.length - 1;
-                  
+
                   return (
                     <div key={step.status} className="flex flex-col items-center relative z-10">
                       <div className={`
                         w-10 h-10 rounded-full flex items-center justify-center border-2 transition-all
-                        ${step.completed ? 'bg-orange-500 border-orange-500 text-white' : 
-                          step.active ? 'bg-white border-orange-500 text-orange-500 animate-pulse' : 
-                          'bg-gray-100 border-gray-300 text-gray-400'}
+                        ${step.completed ? 'bg-orange-500 border-orange-500 text-white' :
+                          step.active ? 'bg-white border-orange-500 text-orange-500 animate-pulse' :
+                            'bg-gray-100 border-gray-300 text-gray-400'}
                       `}>
                         <Icon className="w-5 h-5" />
                       </div>
@@ -174,12 +191,12 @@ const OrderDetail = () => {
           </div>
         </div>
 
-        {/* 🔥🔥🔥 Restaurant Info Card */}
+        {/* Restaurant Info Card */}
         {order.restaurant && (
           <div className="bg-white rounded-2xl shadow-sm p-6">
             <div className="flex items-start gap-4">
-              <img 
-                src={order.restaurant.imageUrl || 'https://via.placeholder.com/80?text=Restaurant'} 
+              <img
+                src={order.restaurant.imageUrl || 'https://via.placeholder.com/80?text=Restaurant'}
                 alt={order.restaurant.name}
                 className="w-20 h-20 rounded-xl object-cover"
               />
@@ -194,7 +211,7 @@ const OrderDetail = () => {
                   <span className="text-gray-500 text-sm">{order.restaurant.cuisine || 'Multi Cuisine'}</span>
                 </div>
                 <p className="text-gray-500 text-sm mt-1">{order.restaurant.address}</p>
-                
+
                 <div className="flex gap-3 mt-3">
                   <button className="flex items-center gap-1 text-orange-600 text-sm font-medium">
                     <Phone className="w-4 h-4" />
@@ -210,7 +227,7 @@ const OrderDetail = () => {
           </div>
         )}
 
-        {/* 🔥🔥🔥 Order Items with Images */}
+        {/*  Order Items with Images */}
         <div className="bg-white rounded-2xl shadow-sm overflow-hidden">
           <div className="p-6 border-b border-gray-100">
             <h3 className="font-bold text-lg flex items-center gap-2">
@@ -218,14 +235,14 @@ const OrderDetail = () => {
               Order Items ({order.orderItems?.length || 0})
             </h3>
           </div>
-          
+
           <div className="divide-y divide-gray-100">
             {order.orderItems?.map((item, index) => (
               <div key={index} className="p-4 flex items-center gap-4">
-                {/* 🔥 Food Image */}
+                {/*  Food Image */}
                 <div className="relative">
-                  <img 
-                    src={item.foodItem?.imageUrl || item.foodItem?.image || 'https://via.placeholder.com/80?text=Food'} 
+                  <img
+                    src={item.foodItem?.imageUrl || item.foodItem?.image || 'https://via.placeholder.com/80?text=Food'}
                     alt={item.foodItem?.name}
                     className="w-24 h-24 rounded-xl object-cover"
                   />
@@ -235,13 +252,13 @@ const OrderDetail = () => {
                     </div>
                   )}
                 </div>
-                
+
                 <div className="flex-1">
                   <h4 className="font-bold text-gray-900">{item.foodItem?.name}</h4>
                   <p className="text-gray-500 text-sm mt-1 line-clamp-2">
                     {item.foodItem?.description || 'Delicious food item'}
                   </p>
-                  
+
                   <div className="flex items-center justify-between mt-3">
                     <div className="flex items-center bg-gray-100 rounded-lg px-3 py-1">
                       <span className="text-gray-700 font-medium">{item.quantity}x</span>
@@ -284,7 +301,7 @@ const OrderDetail = () => {
               <span>GST & Charges</span>
               <span>₹{Number(order.tax || order.totalPrice * 0.05).toFixed(0)}</span>
             </div>
-            
+
             <div className="border-t border-gray-300 pt-3 flex justify-between items-center">
               <span className="font-bold text-lg text-gray-900">Grand Total</span>
               <span className="flex items-center text-xl font-bold text-gray-900">
@@ -295,13 +312,13 @@ const OrderDetail = () => {
           </div>
         </div>
 
-        {/* 🔥🔥🔥 Delivery & Payment Info */}
+        {/*  Delivery & Payment Info */}
         <div className="bg-white rounded-2xl shadow-sm p-6 space-y-4">
           <h3 className="font-bold text-lg flex items-center gap-2">
             <MapPin className="w-5 h-5 text-gray-600" />
             Delivery Details
           </h3>
-          
+
           <div className="bg-gray-50 rounded-xl p-4">
             <p className="font-medium text-gray-900">Delivering to</p>
             <p className="text-gray-600 mt-1 leading-relaxed">{order.deliveryAddress}</p>
@@ -336,7 +353,7 @@ const OrderDetail = () => {
           </div>
         </div>
 
-        {/* 🔥🔥🔥 Help Section */}
+        {/*  Help Section */}
         <div className="bg-white rounded-2xl shadow-sm p-6">
           <h3 className="font-bold text-lg mb-4 flex items-center gap-2">
             <HelpCircle className="w-5 h-5 text-gray-600" />
