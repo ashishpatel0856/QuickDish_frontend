@@ -61,23 +61,18 @@ const Checkout = () => {
         paymentMethod: orderData.paymentMethod // 'COD' or 'ONLINE'
       };
 
-      console.log(" Sending order:", payload);
-
       const response = await orderAPI.create(payload);
-      console.log(" Order created:", response.data);
-
       if (orderData.paymentMethod === 'ONLINE' && response.data?.paymentUrl) {
         window.location.href = response.data.paymentUrl;
-        } else {
-          await clearCart();
-          localStorage.removeItem('currentRestaurantId');
-          
-          setTimeout(() => {
-            navigate(`/order-success/${response.data?.id}`);
-          }, 100);
-        }
+      } else {
+        await clearCart();
+        localStorage.removeItem('currentRestaurantId');
+
+        setTimeout(() => {
+          navigate(`/order-success/${response.data?.id}`);
+        }, 100);
+      }
     } catch (error) {
-      console.error(' Order error:', error);
       alert('Failed to place order: ' + (error.response?.data?.message || error.message));
     } finally {
       setLoading(false);
@@ -288,29 +283,48 @@ const Checkout = () => {
               </div>
 
               <div className="border-t border-gray-200 pt-4 space-y-3">
-                <div className="flex justify-between text-gray-600 text-sm">
+
+                <div className="flex justify-between text-gray-800 text-sm">
                   <span>Item Total</span>
-                  <span>₹{cartTotal.toFixed(0)}</span>
-                </div>
-                <div className="flex justify-between text-gray-600 text-sm">
-                  <span>Delivery Fee</span>
-                  <span className={deliveryFee === 0 ? 'text-green-600 font-medium' : ''}>
-                    {deliveryFee === 0 ? 'FREE' : `₹${deliveryFee}`}
+                  <span className='flex items-center gap-0'>
+                    <IndianRupeeIcon className='w-3 h-3' />
+                    {cartTotal.toFixed(0)}
                   </span>
                 </div>
-                <div className="flex justify-between text-gray-600 text-sm">
-                  <span>Platform Fee</span>
-                  <span>₹{platformFee}</span>
+
+                <div className="flex justify-between text-gray-800 text-sm">
+                  <span>Delivery Fee</span>
+                  <span className={deliveryFee === 0 ? 'text-green-600 font-medium' : ''}>
+                    {deliveryFee === 0 ? 'FREE' : `${deliveryFee}`}
+                  </span>
                 </div>
-                <div className="flex justify-between text-gray-600 text-sm">
+
+
+                <div className="flex justify-between items-center text-gray-800 text-sm">
+                  <span>Platform Fee</span>
+                  <span className="flex items-center gap-0">
+                    <IndianRupeeIcon className="w-3 h-3" />
+                    {platformFee}
+                  </span>
+                </div>
+
+                <div className="flex justify-between text-gray-800 text-sm">
                   <span>GST & Charges</span>
-                  <span>₹{tax.toFixed(0)}</span>
+                  <span className='flex items-center gap-0'>
+                    <IndianRupeeIcon className='w-3 h-3' />
+                    {tax.toFixed(0)}
+                  </span>
                 </div>
 
                 <div className="border-t border-gray-200 pt-3 flex justify-between font-bold text-lg">
                   <span>To Pay</span>
-                  <span className="text-orange-600">₹{total.toFixed(0)}</span>
+                  <span className="text-orange-600 flex justify-between ">
+                    <IndianRupeeIcon className=' w-3 ' />
+                    {total.toFixed(0)}
+                  </span>
                 </div>
+
+
               </div>
             </div>
           </div>
