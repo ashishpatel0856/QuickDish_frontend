@@ -260,7 +260,7 @@ const OwnerOrders = () => {
           <div className="flex items-center justify-between">
             <div>
               <p className="text-gray-500 text-xs md:text-sm">Revenue</p>
-              <p className="text-lg md:text-2xl font-bold text-green-600">₹{stats.totalRevenue.toFixed(0)}</p>
+              <p className="text-lg md:text-2xl font-bold text-green-600">{stats.totalRevenue.toFixed(0)}</p>
             </div>
 
             <div className="w-8 h-8 md:w-12 md:h-12 bg-green-100 rounded-full flex items-center justify-center">
@@ -397,7 +397,7 @@ const OwnerOrders = () => {
                         <p className="text-xl md:text-2xl font-bold text-gray-900">
                           <span className="flex items-center gap-">
                             <IndianRupeeIcon className="w-5 h-5" />
-                           {order.totalPrice.toFixed(0)}
+                            {order.totalPrice.toFixed(0)}
                           </span>
                         </p>
 
@@ -546,27 +546,38 @@ const OwnerOrders = () => {
                         />
                         <div>
                           <p className="font-medium text-gray-900 text-sm md:text-base">{item.foodItem?.name}</p>
-                          <p className="text-xs md:text-sm text-gray-500">
-                            <IndianRupeeIcon/>
-                          {item.price} x {item.quantity}</p>
+                          <p className="text-xs md:text-sm text-gray-800  gap-0">
+                            <IndianRupeeIcon className='h-3 w-3 ' />
+                            {item.price} x {item.quantity}
+                          </p>
                         </div>
                       </div>
-                      <p className="font-bold text-gray-900 text-sm md:text-base">₹{(item.price * item.quantity).toFixed(0)}</p>
+                      <p className="font-bold text-gray-900 text-sm md:text-base flex ">
+                        <IndianRupeeIcon className='w-3.5 ' />
+                        {(item.price * item.quantity).toFixed(0)}
+                      </p>
                     </div>
                   ))}
                 </div>
               </div>
 
-              {/* Bill Summary */}
               <div className="border-t border-gray-200 pt-3 md:pt-4">
                 <div className="flex justify-between text-gray-600 mb-2 text-sm md:text-base">
                   <span>Subtotal</span>
-                  <span>₹{selectedOrder.totalPrice.toFixed(0)}</span>
+                  <span className=' flex justify-between text-gray-800 gap-0'>
+                    <IndianRupeeIcon className='w-3.5' />
+                    {selectedOrder.totalPrice.toFixed(0)}
+                  </span>
                 </div>
+
                 <div className="flex justify-between text-gray-900 font-bold text-base md:text-lg">
                   <span>Total</span>
-                  <span>₹{selectedOrder.totalPrice.toFixed(0)}</span>
+                  <span className='flex justify-between gap-0'>
+                    <IndianRupeeIcon className='w-3.5' />
+                    {selectedOrder.totalPrice.toFixed(0)}
+                  </span>
                 </div>
+
               </div>
             </div>
           </div>

@@ -5,10 +5,10 @@ import OwnerLayout from './components/owner/OwnerLayout';
 import MainLayout from './components/common/MainLayout';
 import AuthLayout from './components/common/AuthLayout';
 
+
 import Home from './pages/Home';
 import Login from './pages/Login';
 import Signup from './pages/Signup';
-import VerifyOTP from './pages/VerifyOTP';
 import RestaurantList from './pages/RestaurantList';
 import RestaurantDetail from './pages/RestaurantDetail';
 import AddRestaurant from './pages/AddRestaurant';        
@@ -29,6 +29,9 @@ import PaymentFailed from './pages/PaymentFailed';
 import OwnerDashboard from './components/owner/Dashboard';
 import OwnerMenu from './components/owner/Menu';
 import OwnerOrders from './components/owner/Orders';
+import RiderDashboard from './pages/RiderDashboard';
+import AdminDashboard from './pages/AdminDashboard';
+import VerifyOTP from './pages/VerifyOtp';
 
 const PageLoader = () => (
   <div className="min-h-screen flex items-center justify-center bg-gray-50">
@@ -66,7 +69,7 @@ function App() {
       <Route element={<AuthLayout />}>
         <Route path="/login" element={<PublicRoute><Login /></PublicRoute>} />
         <Route path="/signup" element={<PublicRoute><Signup /></PublicRoute>} />
-        <Route path="/verify-otp" element={<VerifyOTP />} />
+        <Route path="/verify-otp" element={<VerifyOTP/>} />
       </Route>
 
       <Route element={<MainLayout />}>
@@ -111,6 +114,7 @@ function App() {
         <Route path="/profile" element={<ProtectedRoute><Profile /></ProtectedRoute>} />
       </Route>
 
+      {/* Owner Routes */}
       <Route path="/owner/*" element={
         <ProtectedRoute allowedRoles={['ROLE_RESTAURANT_OWNER']}>
           <OwnerLayout />
@@ -120,6 +124,25 @@ function App() {
         <Route path="dashboard" element={<OwnerDashboard />} />
         <Route path="menu/:restaurantId" element={<OwnerMenu />} />
         <Route path="orders/:restaurantId" element={<OwnerOrders />} />
+      </Route>
+
+      {/*  Admin routes */}
+      <Route path="/admin/*" element={
+        <ProtectedRoute allowedRoles={['ROLE_ADMIN']}>
+          <AdminDashboard />
+        </ProtectedRoute>
+      }>
+        <Route index element={<AdminDashboard />} />
+        <Route path="dashboard" element={<AdminDashboard/>} />
+      </Route>
+      {/* rider path routes */}
+      <Route path="/rider/*" element={
+        <ProtectedRoute allowedRoles={['ROLE_RIDER']}>
+          <RiderDashboard/>
+        </ProtectedRoute>
+      }>
+        <Route index element={<RiderDashboard />} />
+        <Route path="dashboard" element={<RiderDashboard />} />
       </Route>
 
       <Route path="*" element={<NotFound />} />

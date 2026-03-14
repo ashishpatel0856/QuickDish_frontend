@@ -21,7 +21,6 @@ const OrderDetail = () => {
   const { connected } = useWebSocket(user?.id, null, (message) => {
     if (message.data?.id === Number(id)) {
       setOrder(message.data);
-      console.log(' Live update:', message.data.status);
     }
   });
 
@@ -43,7 +42,6 @@ const OrderDetail = () => {
       const response = await orderAPI.getById(id);
       setOrder(response.data);
     } catch (error) {
-      console.error('Failed to fetch order:', error);
     } finally {
       if (showLoading) setLoading(false);
     }
@@ -99,7 +97,6 @@ const OrderDetail = () => {
 
   return (
     <div className="min-h-screen bg-gray-100">
-      {/* Sticky Header */}
       <div className="sticky top-0 z-50 bg-white shadow-sm">
         <div className="max-w-4xl mx-auto px-4 py-4 flex items-center justify-between">
           <button
@@ -125,9 +122,8 @@ const OrderDetail = () => {
       </div>
 
       <div className="max-w-4xl mx-auto px-4 py-6 space-y-4">
-        {/*  Live Status Card */}
         <div className="bg-white rounded-2xl shadow-sm overflow-hidden">
-          {/* Progress Bar */}
+
           <div className="h-1 bg-gray-200 w-full">
             <div
               className={`h-full ${getStatusColor(order.status)} transition-all duration-500`}
@@ -160,7 +156,7 @@ const OrderDetail = () => {
               </div>
             </div>
 
-            {/* Timeline */}
+
             <div className="relative mt-6">
               <div className="flex justify-between items-center">
                 {statusSteps.map((step, index) => {
@@ -191,7 +187,6 @@ const OrderDetail = () => {
           </div>
         </div>
 
-        {/* Restaurant Info Card */}
         {order.restaurant && (
           <div className="bg-white rounded-2xl shadow-sm p-6">
             <div className="flex items-start gap-4">
@@ -227,7 +222,7 @@ const OrderDetail = () => {
           </div>
         )}
 
-        {/*  Order Items with Images */}
+
         <div className="bg-white rounded-2xl shadow-sm overflow-hidden">
           <div className="p-6 border-b border-gray-100">
             <h3 className="font-bold text-lg flex items-center gap-2">
@@ -239,7 +234,6 @@ const OrderDetail = () => {
           <div className="divide-y divide-gray-100">
             {order.orderItems?.map((item, index) => (
               <div key={index} className="p-4 flex items-center gap-4">
-                {/*  Food Image */}
                 <div className="relative">
                   <img
                     src={item.foodItem?.imageUrl || item.foodItem?.image || 'https://via.placeholder.com/80?text=Food'}
@@ -265,11 +259,13 @@ const OrderDetail = () => {
                     </div>
                     <div className="text-right">
                       <p className="flex items-center font-bold text-gray-900">
-                        <IndianRupeeIcon className="w-4 h-4 mr-0" />
+                        <IndianRupeeIcon className="w-3.5 h-4 mr-0" />
                         {Number(item.price * item.quantity).toFixed(0)}
                       </p>
-                      <p className="text-gray-500 text-sm">
-                        ₹{Number(item.price).toFixed(0)} each
+
+                      <p className="text-gray-800 text-sm flex justify-between gap-0">
+                        <IndianRupeeIcon className='w-3.5 text-gray-900' />
+                        {Number(item.price).toFixed(0)}  each item
                       </p>
                     </div>
                   </div>
@@ -280,39 +276,58 @@ const OrderDetail = () => {
 
           {/* Bill Summary */}
           <div className="bg-gray-50 p-6 space-y-3">
-            <div className="flex justify-between text-gray-600">
+            <div className="flex justify-between text-gray-900 gap-0">
               <span>Item Total</span>
               <span className="flex items-center">
-                <IndianRupeeIcon className="w-3 h-3 mr-1" />
+                <IndianRupeeIcon className="w-3 h-3" />
                 {Number(order.subTotal || order.totalPrice * 0.85).toFixed(0)}
               </span>
             </div>
-            <div className="flex justify-between text-gray-600">
+
+            <div className="flex justify-between items-center text-gray-900">
               <span>Delivery Fee</span>
-              <span className={order.deliveryFee === 0 ? 'text-green-600 font-medium' : ''}>
-                {order.deliveryFee === 0 ? 'FREE' : `₹${order.deliveryFee || 40}`}
+              <span
+                className={`flex items-center gap-0 ${order.deliveryFee === 0 ? "text-green-600 font-medium" : ""
+                  }`}
+              >
+                {order.deliveryFee === 0 ? (
+                  "FREE"
+                ) : (
+                  <>
+                    <IndianRupeeIcon className="w-3.5 " />
+                    {order.deliveryFee || 40}
+                  </>
+                )}
               </span>
             </div>
-            <div className="flex justify-between text-gray-600">
+
+            <div className="flex justify-between text-gray-900">
               <span>Platform Fee</span>
-              <span>₹{order.platformFee || 10}</span>
+              <span className='flex gap-0 justify-between'>
+                <IndianRupeeIcon className='w-3.5' />
+                {order.platformFee || 10}
+              </span>
             </div>
-            <div className="flex justify-between text-gray-600">
+
+            <div className="flex justify-between text-gray-900">
               <span>GST & Charges</span>
-              <span>₹{Number(order.tax || order.totalPrice * 0.05).toFixed(0)}</span>
+              <span className='flex justify-between gap-0'>
+                <IndianRupeeIcon className="w-3.5" />
+                {Number(order.tax || order.totalPrice * 0.05).toFixed(0)}
+              </span>
             </div>
 
             <div className="border-t border-gray-300 pt-3 flex justify-between items-center">
               <span className="font-bold text-lg text-gray-900">Grand Total</span>
               <span className="flex items-center text-xl font-bold text-gray-900">
-                <IndianRupeeIcon className="w-5 h-5 mr-1" />
+                <IndianRupeeIcon className="w-5 h-5 gap-0" />
                 {Number(order.totalPrice).toFixed(0)}
               </span>
             </div>
           </div>
         </div>
 
-        {/*  Delivery & Payment Info */}
+
         <div className="bg-white rounded-2xl shadow-sm p-6 space-y-4">
           <h3 className="font-bold text-lg flex items-center gap-2">
             <MapPin className="w-5 h-5 text-gray-600" />
@@ -347,13 +362,14 @@ const OrderDetail = () => {
                 </p>
               </div>
             </div>
-            <span className="text-lg font-bold text-gray-900">
-              ₹{Number(order.totalPrice).toFixed(0)}
+
+            <span className="text-lg font-bold text-gray-900 flex items-center gap-0">
+              <IndianRupeeIcon className="w-4 h-4" />
+              {Number(order.totalPrice).toFixed(0)}
             </span>
           </div>
         </div>
 
-        {/*  Help Section */}
         <div className="bg-white rounded-2xl shadow-sm p-6">
           <h3 className="font-bold text-lg mb-4 flex items-center gap-2">
             <HelpCircle className="w-5 h-5 text-gray-600" />
@@ -375,7 +391,6 @@ const OrderDetail = () => {
           </div>
         </div>
 
-        {/* Order Placed Time */}
         <div className="text-center text-gray-500 text-sm pb-8">
           <p>Order placed on {new Date(order.orderDate).toLocaleString('en-US', {
             weekday: 'long',

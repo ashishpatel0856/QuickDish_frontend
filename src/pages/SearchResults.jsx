@@ -85,7 +85,6 @@ const SearchResults = () => {
         </div>
       )}
 
-      {/* Header - Swiggy Style */}
       <div className="bg-white shadow-sm sticky top-0 z-40">
         <div className="max-w-7xl mx-auto px-3 sm:px-4 lg:px-6 py-3 sm:py-4">
           <div className="flex items-center gap-3 sm:gap-4">
@@ -109,7 +108,6 @@ const SearchResults = () => {
         </div>
       </div>
 
-      {/* Results Section */}
       <div className="max-w-7xl mx-auto px-3 sm:px-4 lg:px-6 py-4 sm:py-6">
         <div className="flex items-center justify-between mb-4 sm:mb-6">
           <h1 className="text-lg sm:text-xl lg:text-2xl font-bold text-gray-900">
@@ -158,7 +156,6 @@ const SearchResults = () => {
                   key={food.id} 
                   className="bg-white rounded-xl sm:rounded-2xl overflow-hidden shadow-sm hover:shadow-lg transition-all duration-300 border border-gray-100 group"
                 >
-                  {/* Image Container - Aspect Ratio */}
                   <div className="relative aspect-[4/3] overflow-hidden">
                     <Link to={`/restaurant/${food.restaurantId}`}>
                       <img 
@@ -168,21 +165,18 @@ const SearchResults = () => {
                       />
                     </Link>
                     
-                    {/* Veg/Non-veg Badge */}
                     <div className="absolute top-2 left-2">
                       <span className="w-4 h-4 sm:w-5 sm:h-5 bg-white rounded-sm border-2 border-green-500 flex items-center justify-center">
                         <span className="w-2 sm:w-2.5 h-2 sm:h-2.5 bg-green-500 rounded-full"></span>
                       </span>
                     </div>
                     
-                    {/* Bestseller Tag */}
                     {food.bestseller && (
                       <span className="absolute top-2 right-2 bg-orange-500 text-white text-[10px] sm:text-xs px-2 py-0.5 rounded font-bold uppercase tracking-wide">
                         Bestseller
                       </span>
                     )}
                     
-                    {/* Time Badge */}
                     <span className="absolute bottom-2 left-2 bg-black/70 text-white text-xs px-2 py-0.5 rounded font-medium">
                       25-30 min
                     </span>

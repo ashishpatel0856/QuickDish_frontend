@@ -33,7 +33,6 @@ const Profile = () => {
     setEditing(false);
     alert('Profile updated successfully!');
   } catch (error) {
-    console.error('Profile update failed:', error);
     alert('Failed to update profile'); 
   } finally {
     setSaving(false);
@@ -71,14 +70,17 @@ const Profile = () => {
                     <label className="block text-sm font-medium text-gray-700 mb-2"><User className="w-4 h-4 inline mr-2" />Full Name</label>
                     <input type="text" name="name" value={formData.name} onChange={handleChange} disabled={!editing} className="w-full px-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-primary-500 disabled:bg-gray-50" />
                   </div>
+
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-2"><Mail className="w-4 h-4 inline mr-2" />Email Address</label>
                     <input type="email" name="email" value={formData.email} disabled className="w-full px-4 py-3 border border-gray-200 rounded-xl bg-gray-50" />
                   </div>
+
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-2"><Phone className="w-4 h-4 inline mr-2" />Phone Number</label>
                     <input type="tel" name="phone" value={formData.phone} onChange={handleChange} disabled={!editing} className="w-full px-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-primary-500 disabled:bg-gray-50" />
                   </div>
+                  
                 </div>
 
                 <div>

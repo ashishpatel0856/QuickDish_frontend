@@ -100,6 +100,34 @@ export const authAPI = {
   refreshToken: (token) => api.post('/auth/refresh', { token }),
 };
 
+export const riderAPI = {
+  getProfile: () => api.get('/riders/profile'),
+  updateStatus: (status) => api.put(`/riders/status?status=${status}`),
+  updateLocation: (data) => api.put('/riders/location', data),
+  
+  getAvailableOrders: () => api.get('/riders/orders/available'),
+  acceptOrder: (orderId) => api.post(`/riders/orders/${orderId}/accept`),
+  getCurrentOrder: () => api.get('/riders/orders/current'),
+  getOrderHistory: (page = 0) => api.get(`/riders/orders/history?page=${page}`),
+  
+  arriveAtRestaurant: (assignmentId) => api.put(`/riders/orders/${assignmentId}/arrive-restaurant`),
+  pickupOrder: (assignmentId, otp) => api.put(`/riders/orders/${assignmentId}/pickup`, { otp }),
+  arriveAtCustomer: (assignmentId) => api.put(`/riders/orders/${assignmentId}/arrive-customer`),
+  deliverOrder: (assignmentId, otp) => api.put(`/riders/orders/${assignmentId}/deliver`, { otp }),
+  
+  getTodayEarnings: () => api.get('/riders/earnings/today'),
+  getEarnings: (from, to) => api.get(`/riders/earnings?from=${from}&to=${to}`),
+};
+
+export const adminAPI = {
+  // Rider Management
+  getPendingRiders: () => api.get('/admin/riders/pending'),
+  getApprovedRiders: () => api.get('/admin/riders/approved'),
+  approveRider: (userId) => api.put(`/admin/riders/${userId}/approve`),
+  rejectRider: (riderId) => api.put(`/admin/riders/${riderId}/reject`),
+  getRiderById: (riderId) => api.get(`/admin/riders/${riderId}`),
+};
+
 export const restaurantAPI = {
   getAll: () => api.get('/restaurant'),
   getById: (id) => api.get(`/restaurant/${id}`),
@@ -131,28 +159,20 @@ export const cartAPI = {
   clear: (userId) => api.delete(`/carts/clear/${userId}`),
 };
 
-
 export const orderAPI = {
   getAll: () => api.get('/orders/customers'),
   getById: (id) => api.get(`/orders/customers/${id}`),
   create: (data) => api.post('/orders/customers', data),
   updateStatus: (id, status) => api.patch(`/orders/customers/${id}/status?status=${status}`),
   verifyPayment: (orderId) => api.get(`/orders/customers/${orderId}`),
-   forceVerifyPayment: (orderId) => api.post(`/orders/customers/${orderId}/verify-payment`),
+  forceVerifyPayment: (orderId) => api.post(`/orders/customers/${orderId}/verify-payment`),
 
-    getRestaurantOrders: (restaurantId, status) => 
+  getRestaurantOrders: (restaurantId, status) => 
     api.get(`/orders/customers/restaurant/${restaurantId}${status ? `?status=${status}` : ''}`),
-    
-  acceptOrder: (orderId) => 
-    api.put(`/orders/customers//${orderId}/accept`),
-    
-  rejectOrder: (orderId, reason) => 
-    api.put(`/orders/customers/${orderId}/reject?reason=${encodeURIComponent(reason)}`),
-    
-  updateOrderStatus: (orderId, status) => 
-    api.put(`/orders/customers/${orderId}/status?status=${status}`)
+  acceptOrder: (orderId) => api.put(`/orders/customers//${orderId}/accept`),
+  rejectOrder: (orderId, reason) => api.put(`/orders/customers/${orderId}/reject?reason=${encodeURIComponent(reason)}`),
+  updateOrderStatus: (orderId, status) => api.put(`/orders/customers/${orderId}/status?status=${status}`)
 };
-
 
 export const reviewAPI = {
   getAll: () => api.get('/review'),
