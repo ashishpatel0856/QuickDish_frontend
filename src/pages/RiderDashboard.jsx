@@ -7,6 +7,7 @@ import {
   CheckCircle, AlertCircle, User, TrendingUp, Calendar,
   ArrowRight, MapPinned, Timer, Wallet
 } from 'lucide-react';
+import { useAuth } from '../context/AuthContext';
 
 const RiderDashboard = () => {
   const navigate = useNavigate();
@@ -21,7 +22,8 @@ const RiderDashboard = () => {
   const [otpInput, setOtpInput] = useState('');
   const [showOtpModal, setShowOtpModal] = useState(false);
   const [otpAction, setOtpAction] = useState(null);
-
+ const { logout } = useAuth();
+  
   useEffect(() => {
     fetchRiderData();
     const interval = setInterval(fetchRiderData, 30000);
@@ -95,10 +97,7 @@ const RiderDashboard = () => {
   };
 
   const handleLogout = () => {
-    localStorage.removeItem('accessToken');
-    localStorage.removeItem('refreshToken');
-    localStorage.removeItem('user');
-    navigate('/login');
+    logout();
   };
 
 

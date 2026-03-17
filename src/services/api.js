@@ -120,12 +120,13 @@ export const riderAPI = {
 };
 
 export const adminAPI = {
-  // Rider Management
   getPendingRiders: () => api.get('/admin/riders/pending'),
   getApprovedRiders: () => api.get('/admin/riders/approved'),
   approveRider: (userId) => api.put(`/admin/riders/${userId}/approve`),
   rejectRider: (riderId) => api.put(`/admin/riders/${riderId}/reject`),
   getRiderById: (riderId) => api.get(`/admin/riders/${riderId}`),
+  getPlatformEarnings: () => api.get('/admin/earnings'), 
+
 };
 
 export const restaurantAPI = {

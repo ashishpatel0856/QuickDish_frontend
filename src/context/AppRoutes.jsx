@@ -1,15 +1,9 @@
 import { Routes, Route, Navigate } from 'react-router-dom';
 import { useAuth } from './context/AuthContext';
-
-// Auth Pages
 import Login from './pages/Login';
 import Signup from './pages/Signup';
-
-// Dashboards
 import AdminDashboard from './pages/AdminDashboard';
 import RiderDashboard from './pages/RiderDashboard';
-
-// Protected Route Component
 const ProtectedRoute = ({ children, allowedRoles }) => {
   const { user, isAuthenticated } = useAuth();
   

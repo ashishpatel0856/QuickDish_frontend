@@ -5,8 +5,8 @@ import { Mail, Lock, Eye, EyeOff, Loader2 } from 'lucide-react';
 
 const Login = () => {
   const navigate = useNavigate();
-  const location = useLocation();  // 🆕 Previous location track karne ke liye
-  const { login, isAuthenticated, user } = useAuth();  // 🆕 isAuthenticated aur user bhi lo
+  const location = useLocation();  
+  const { login, isAuthenticated, user } = useAuth();  
   const [formData, setFormData] = useState({ 
     email: '', 
     password: ''
@@ -15,10 +15,8 @@ const Login = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
 
-  // 🆕 AUTO-REDIRECT: Agar already logged in hai, toh dashboard pe bhejo
   useEffect(() => {
     if (isAuthenticated && user) {
-      console.log('🔄 Auto-redirecting based on role...');
       handleRoleBasedRedirect(user);
     }
   }, [isAuthenticated, user]);
@@ -31,13 +29,10 @@ const Login = () => {
     const isOwner = userRoles.includes('ROLE_RESTAURANT_OWNER');
     const isAdmin = userRoles.includes('ROLE_ADMIN');
 
-    console.log('🎯 Redirecting:', { isAdmin, isOwner, isRider });
 
     if (isAdmin) {
-      console.log('➡️ To Admin Dashboard');
       navigate('/admin/dashboard', { replace: true });
     } else if (isOwner) {
-      console.log('➡️ To Owner Dashboard');
       navigate('/owner/dashboard', { replace: true });
     } else if (isRider) {
       const isVerified = userData?.isRiderVerified || false;
@@ -45,11 +40,9 @@ const Login = () => {
         alert('Your rider account is pending admin approval.');
         navigate('/rider/pending-approval', { replace: true });
       } else {
-        console.log('➡️ To Rider Dashboard');
         navigate('/rider/dashboard', { replace: true });
       }
     } else {
-      console.log('➡️ To Home');
       navigate('/', { replace: true });
     }
   };
@@ -65,7 +58,6 @@ const Login = () => {
     setError('');
     
     try {
-      console.log('🔐 Login attempt:', formData.email);
       const result = await login({
         email: formData.email,
         password: formData.password
@@ -74,14 +66,11 @@ const Login = () => {
       console.log('📦 Login result:', result);
       
       if (result.success && result.user) {
-        // 🆕 State update hoga, useEffect handle kar lega redirect
-        console.log('✅ Login successful, waiting for state update...');
-        // Navigation useEffect mein handle ho raha hai
+        console.log(' Login successful, waiting for state update...');
       } else {
         setError(result.error || 'Login failed');
       }
     } catch (err) {
-      console.error('💥 Error:', err);
       setError('Login failed. Please try again.');
     }
     

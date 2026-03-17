@@ -1,20 +1,17 @@
 import { Routes, Route, Navigate } from 'react-router-dom';
 import { useAuth } from './context/AuthContext';
-
 import OwnerLayout from './components/owner/OwnerLayout';
 import MainLayout from './components/common/MainLayout';
 import AuthLayout from './components/common/AuthLayout';
-
-
 import Home from './pages/Home';
 import Login from './pages/Login';
 import Signup from './pages/Signup';
 import RestaurantList from './pages/RestaurantList';
 import RestaurantDetail from './pages/RestaurantDetail';
-import AddRestaurant from './pages/AddRestaurant';        
-import EditRestaurant from './pages/EditRestaurant';      
-import AddFood from './pages/AddFood';                    
-import EditFood from './pages/EditFood';                  
+import AddRestaurant from './pages/AddRestaurant';
+import EditRestaurant from './pages/EditRestaurant';
+import AddFood from './pages/AddFood';
+import EditFood from './pages/EditFood';
 import Cart from './pages/Cart';
 import Checkout from './pages/Checkout';
 import Orders from './pages/Orders';
@@ -32,6 +29,7 @@ import OwnerOrders from './components/owner/Orders';
 import RiderDashboard from './pages/RiderDashboard';
 import AdminDashboard from './pages/AdminDashboard';
 import VerifyOTP from './pages/VerifyOtp';
+import AdminProfile from './pages/AdminProfile';
 
 const PageLoader = () => (
   <div className="min-h-screen flex items-center justify-center bg-gray-50">
@@ -41,74 +39,93 @@ const PageLoader = () => (
 
 const ProtectedRoute = ({ children, allowedRoles }) => {
   const { isAuthenticated, user, loading } = useAuth();
-  
+
   if (loading) return <PageLoader />;
   if (!isAuthenticated) return <Navigate to="/login" replace />;
-  
+
   const userRoles = user?.roles || [user?.role].filter(Boolean);
-  
+
   if (allowedRoles && !allowedRoles.some(role => userRoles.includes(role))) {
     return <Navigate to="/" replace />;
   }
-  
+
   return children;
 };
 
 const PublicRoute = ({ children }) => {
-  const { isAuthenticated, loading } = useAuth();
+  const { isAuthenticated, user, loading } = useAuth();
+
   if (loading) return <PageLoader />;
-  if (isAuthenticated) return <Navigate to="/" replace />;
+
+  if (isAuthenticated && user) {
+    const roles = user?.roles || [user?.role];
+
+    if (roles.includes("ROLE_ADMIN")) {
+      return <Navigate to="/admin/dashboard" replace />;
+    }
+
+    if (roles.includes("ROLE_RESTAURANT_OWNER")) {
+      return <Navigate to="/owner/dashboard" replace />;
+    }
+
+    if (roles.includes("ROLE_RIDER")) {
+      return <Navigate to="/rider/dashboard" replace />;
+    }
+
+    return <Navigate to="/" replace />;
+  }
+
   return children;
 };
 
 function App() {
 
   return (
-    
+
     <Routes>
       <Route element={<AuthLayout />}>
         <Route path="/login" element={<PublicRoute><Login /></PublicRoute>} />
         <Route path="/signup" element={<PublicRoute><Signup /></PublicRoute>} />
-        <Route path="/verify-otp" element={<VerifyOTP/>} />
+        <Route path="/verify-otp" element={<VerifyOTP />} />
       </Route>
 
       <Route element={<MainLayout />}>
         <Route path="/" element={<ProtectedRoute><Home /></ProtectedRoute>} />
         <Route path="/restaurants" element={<ProtectedRoute><RestaurantList /></ProtectedRoute>} />
-        
+
         <Route path="/restaurant/add" element={
           <ProtectedRoute allowedRoles={['ROLE_RESTAURANT_OWNER']}>
             <AddRestaurant />
           </ProtectedRoute>
         } />
-        
+
         <Route path="/restaurant/:id/edit" element={
           <ProtectedRoute allowedRoles={['ROLE_RESTAURANT_OWNER']}>
             <EditRestaurant />
           </ProtectedRoute>
         } />
-        
+
         <Route path="/restaurant/:id/add-food" element={
           <ProtectedRoute allowedRoles={['ROLE_RESTAURANT_OWNER']}>
             <AddFood />
           </ProtectedRoute>
         } />
-        
+
         <Route path="/restaurant/:id/edit-food/:foodId" element={
           <ProtectedRoute allowedRoles={['ROLE_RESTAURANT_OWNER']}>
             <EditFood />
           </ProtectedRoute>
         } />
-        
+
         <Route path="/restaurant/:id" element={<ProtectedRoute><RestaurantDetail /></ProtectedRoute>} />
-        
+
         <Route path="/search" element={<ProtectedRoute><SearchResults /></ProtectedRoute>} />
         <Route path="/cart" element={<ProtectedRoute><Cart /></ProtectedRoute>} />
         <Route path="/checkout" element={<ProtectedRoute><Checkout /></ProtectedRoute>} />
-        
+
         <Route path="/payment/success" element={<ProtectedRoute><PaymentSuccess /></ProtectedRoute>} />
         <Route path="/payment/failed" element={<ProtectedRoute><PaymentFailed /></ProtectedRoute>} />
-        
+
         <Route path="/orders" element={<ProtectedRoute><Orders /></ProtectedRoute>} />
         <Route path="/orders/:id" element={<ProtectedRoute><OrderDetail /></ProtectedRoute>} />
         <Route path="/profile" element={<ProtectedRoute><Profile /></ProtectedRoute>} />
@@ -126,19 +143,23 @@ function App() {
         <Route path="orders/:restaurantId" element={<OwnerOrders />} />
       </Route>
 
-      {/*  Admin routes */}
-      <Route path="/admin/*" element={
+      <Route path="/admin/dashboard" element={
         <ProtectedRoute allowedRoles={['ROLE_ADMIN']}>
           <AdminDashboard />
         </ProtectedRoute>
-      }>
-        <Route index element={<AdminDashboard />} />
-        <Route path="dashboard" element={<AdminDashboard/>} />
-      </Route>
+      } />
+
+      <Route path="/admin/profile" element={
+        <ProtectedRoute allowedRoles={['ROLE_ADMIN']}>
+          <AdminProfile />
+        </ProtectedRoute>
+      } />
+
+
       {/* rider path routes */}
-      <Route path="/rider/*" element={
+      <Route path="/rider/dashboard/*" element={
         <ProtectedRoute allowedRoles={['ROLE_RIDER']}>
-          <RiderDashboard/>
+          <RiderDashboard />
         </ProtectedRoute>
       }>
         <Route index element={<RiderDashboard />} />
