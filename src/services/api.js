@@ -127,6 +127,17 @@ export const adminAPI = {
   getRiderById: (riderId) => api.get(`/admin/riders/${riderId}`),
   getPlatformEarnings: () => api.get('/admin/earnings'), 
 
+
+   // Restaurant Owners
+  getPendingOwners: () => api.get('/admin/owners/pending'),
+  getApprovedOwners: () => api.get('/admin/owners/approved'),
+  approveOwner: (ownerId) => api.put(`/admin/owners/${ownerId}/approve`),
+  rejectOwner: (ownerId) => api.delete(`/admin/owners/${ownerId}/reject`),
+  verifyOwnerDocuments: (ownerId, approved, reason) => 
+    api.put(`/admin/owners/${ownerId}/verify-documents?approved=${approved}&rejectionReason=${encodeURIComponent(reason || '')}`),
+  
+  // Stats
+  getPlatformEarnings: () => api.get('/admin/earnings'),
 };
 
 export const restaurantAPI = {

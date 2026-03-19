@@ -1,5 +1,5 @@
-import { useState, useEffect } from 'react';  // 🆕 useEffect add karo
-import { Link, useNavigate, useLocation } from 'react-router-dom';  // 🆕 useLocation add karo
+import { useState, useEffect } from 'react';  
+import { Link, useNavigate, useLocation } from 'react-router-dom';  
 import { useAuth } from '../context/AuthContext';
 import { Mail, Lock, Eye, EyeOff, Loader2 } from 'lucide-react';
 
@@ -63,7 +63,6 @@ const Login = () => {
         password: formData.password
       });
       
-      console.log('📦 Login result:', result);
       
       if (result.success && result.user) {
         console.log(' Login successful, waiting for state update...');

@@ -13,7 +13,6 @@ const VerifyOTP = () => {
   
   const email = location.state?.email;
 
-  // Agar email nahi hai toh login pe bhejo
   if (!email) {
     navigate('/login');
     return null;

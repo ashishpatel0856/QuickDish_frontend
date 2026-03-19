@@ -142,7 +142,7 @@ const Dashboard = () => {
                     onClick={() => navigate(`/restaurant/${restaurant.id}/add-food`)}
                     className="flex-1 text-center py-2 text-orange-500 hover:text-orange-600 text-sm font-medium"
                   >
-                    + Add Food
+                     Add Food
                   </button>
                 </div>
               </div>

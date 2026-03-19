@@ -25,19 +25,19 @@ const Profile = () => {
     }
   };
 
- const handleSave = async () => {
-  setSaving(true);
-  try {
-    const response = await userAPI.updateProfile(formData);
-    updateUser({ ...user, ...formData }); 
-    setEditing(false);
-    alert('Profile updated successfully!');
-  } catch (error) {
-    alert('Failed to update profile'); 
-  } finally {
-    setSaving(false);
-  }
-};
+  const handleSave = async () => {
+    setSaving(true);
+    try {
+      const response = await userAPI.updateProfile(formData);
+      updateUser({ ...user, ...formData });
+      setEditing(false);
+      alert('Profile updated successfully!');
+    } catch (error) {
+      alert('Failed to update profile');
+    } finally {
+      setSaving(false);
+    }
+  };
 
   return (
     <div className="min-h-screen bg-gray-50 py-8">
@@ -59,7 +59,8 @@ const Profile = () => {
                 <h3 className="text-xl font-bold">Personal Information</h3>
                 <button onClick={() => editing ? handleSave() : setEditing(true)} disabled={saving}
                   className="flex items-center px-4 py-2 bg-primary-500 text-white rounded-lg hover:bg-primary-600 transition-colors disabled:opacity-50">
-                  {saving ? <Loader2 className="w-4 h-4 animate-spin mr-2" /> : editing ? <Save className="w-4 h-4 mr-2" /> : <Edit2 className="w-4 h-4 mr-2" />}
+                  {saving ? <Loader2 className="w-4 h-4 animate-spin mr-2" /> : editing ?
+                    <Save className="w-4 h-4 mr-2" /> : <Edit2 className="w-4 h-4 mr-2" />}
                   {editing ? 'Save Changes' : 'Edit Profile'}
                 </button>
               </div>
@@ -67,29 +68,72 @@ const Profile = () => {
               <div className="space-y-6">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2"><User className="w-4 h-4 inline mr-2" />Full Name</label>
-                    <input type="text" name="name" value={formData.name} onChange={handleChange} disabled={!editing} className="w-full px-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-primary-500 disabled:bg-gray-50" />
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      <User className="w-4 h-4 inline mr-2" />Full Name</label>
+                    <input type="text"
+                      name="name"
+                      value={formData.name}
+                      onChange={handleChange}
+                      disabled={!editing}
+                      className="w-full px-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-primary-500 disabled:bg-gray-50" />
                   </div>
 
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2"><Mail className="w-4 h-4 inline mr-2" />Email Address</label>
-                    <input type="email" name="email" value={formData.email} disabled className="w-full px-4 py-3 border border-gray-200 rounded-xl bg-gray-50" />
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      <Mail className="w-4 h-4 inline mr-2" />Email Address</label>
+                    <input type="email"
+                      name="email"
+                      value={formData.email}
+                      disabled className="w-full px-4 py-3 border border-gray-200 rounded-xl bg-gray-50" />
                   </div>
 
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2"><Phone className="w-4 h-4 inline mr-2" />Phone Number</label>
-                    <input type="tel" name="phone" value={formData.phone} onChange={handleChange} disabled={!editing} className="w-full px-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-primary-500 disabled:bg-gray-50" />
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      <Phone className="w-4 h-4 inline mr-2" />Phone Number</label>
+                    <input type="tel"
+                      name="phone"
+                      value={formData.phone}
+                      onChange={handleChange}
+                      disabled={!editing}
+                      className="w-full px-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-primary-500 disabled:bg-gray-50" />
                   </div>
-                  
+
                 </div>
 
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2"><MapPin className="w-4 h-4 inline mr-2" />Address</label>
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <input type="text" name="address.street" value={formData.address.street} onChange={handleChange} disabled={!editing} placeholder="Street Address" className="w-full px-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-primary-500 disabled:bg-gray-50" />
-                    <input type="text" name="address.city" value={formData.address.city} onChange={handleChange} disabled={!editing} placeholder="City" className="w-full px-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-primary-500 disabled:bg-gray-50" />
-                    <input type="text" name="address.state" value={formData.address.state} onChange={handleChange} disabled={!editing} placeholder="State" className="w-full px-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-primary-500 disabled:bg-gray-50" />
-                    <input type="text" name="address.pinCode" value={formData.address.pinCode} onChange={handleChange} disabled={!editing} placeholder="PIN Code" className="w-full px-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-primary-500 disabled:bg-gray-50" />
+
+                    <input type="text" name="address.street"
+                      value={formData.address.street}
+                      onChange={handleChange}
+                      disabled={!editing}
+                      placeholder="Street Address"
+                      className="w-full px-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-primary-500 disabled:bg-gray-50" />
+
+                    <input type="text"
+                      name="address.city"
+                      value={formData.address.city}
+                      onChange={handleChange}
+                      disabled={!editing}
+                      placeholder="City"
+                      className="w-full px-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-primary-500 disabled:bg-gray-50" />
+
+                    <input type="text"
+                      name="address.state"
+                      value={formData.address.state}
+                      onChange={handleChange}
+                      disabled={!editing}
+                      placeholder="State"
+                      className="w-full px-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-primary-500 disabled:bg-gray-50" />
+
+                    <input type="text"
+                      name="address.pinCode"
+                      value={formData.address.pinCode}
+                      onChange={handleChange}
+                      disabled={!editing}
+                      placeholder="PIN Code"
+                      className="w-full px-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-primary-500 disabled:bg-gray-50" />
                   </div>
                 </div>
               </div>
