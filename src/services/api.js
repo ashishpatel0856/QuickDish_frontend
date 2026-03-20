@@ -102,7 +102,7 @@ export const authAPI = {
 
 export const riderAPI = {
   getProfile: () => api.get('/riders/profile'),
-  updateStatus: (status) => api.put(`/riders/status?status=${status}`),
+ updateStatus: (status) => api.put('/riders/status', { status }),
   updateLocation: (data) => api.put('/riders/location', data),
   
   getAvailableOrders: () => api.get('/riders/orders/available'),

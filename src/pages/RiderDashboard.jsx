@@ -10,6 +10,12 @@ import ProfileTab from '../components/rider/ProfileTab';
 import OtpModal from '../components/rider/OtpModal';
 import LoadingScreen from '../components/common/LoadingScreen';
 
+const STATUS = {
+  OFFLINE: 'OFFLINE',
+  AVAILABLE: 'AVAILABLE',
+  BUSY: 'BUSY'
+};
+
 const RiderDashboard = () => {
   const [activeTab, setActiveTab] = useState('orders');
   const [sidebarOpen, setSidebarOpen] = useState(false);
@@ -22,7 +28,7 @@ const RiderDashboard = () => {
     riderStatus,
     loading,
     updateStatus,
-    updateLocation, // ✅ New
+    updateLocation,
     acceptOrder,
     handlePickup,
     handleDeliver,
@@ -96,11 +102,62 @@ const RiderDashboard = () => {
             />
             <StatsCard 
               title="Rating" 
-              value={`${profile?.rating || '4.8'} ⭐`} 
+              value={`${profile?.rating || '4.8'} `} 
               subtext="Your Rating"
               icon="Star"
               color="orange"
             />
+          </div>
+
+          <div className="bg-white rounded-xl shadow-sm p-4 mb-6">
+            <div className="flex items-center justify-between">
+              <div>
+                <h3 className="font-semibold text-gray-900">Current Status</h3>
+                <p className="text-sm text-gray-500">
+                  {riderStatus === STATUS.OFFLINE && "You are offline"}
+                  {riderStatus === STATUS.AVAILABLE && "Ready to accept orders"}
+                  {riderStatus === STATUS.BUSY && "You have an active order"}
+                </p>
+              </div>
+              
+              {/* Status Toggle Buttons */}
+              <div className="flex gap-2">
+                <button
+                  onClick={() => updateStatus(STATUS.OFFLINE)}
+                  disabled={riderStatus === STATUS.BUSY || loading}
+                  className={`px-4 py-2 rounded-lg font-medium transition-colors ${
+                    riderStatus === STATUS.OFFLINE
+                      ? 'bg-gray-800 text-white'
+                      : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
+                  } ${riderStatus === STATUS.BUSY ? 'opacity-50 cursor-not-allowed' : ''}`}
+                >
+                  Offline
+                </button>
+                
+                <button
+                  onClick={() => updateStatus(STATUS.AVAILABLE)}
+                  disabled={riderStatus === STATUS.BUSY || loading}
+                  className={`px-4 py-2 rounded-lg font-medium transition-colors ${
+                    riderStatus === STATUS.AVAILABLE
+                      ? 'bg-green-500 text-white'
+                      : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
+                  } ${riderStatus === STATUS.BUSY ? 'opacity-50 cursor-not-allowed' : ''}`}
+                >
+                  Available
+                </button>
+                
+                <button
+                  disabled={true}
+                  className={`px-4 py-2 rounded-lg font-medium ${
+                    riderStatus === STATUS.BUSY
+                      ? 'bg-orange-500 text-white'
+                      : 'bg-gray-100 text-gray-400 cursor-not-allowed'
+                  }`}
+                >
+                  Busy
+                </button>
+              </div>
+            </div>
           </div>
 
           {/* Current Order */}
@@ -112,11 +169,11 @@ const RiderDashboard = () => {
             />
           )}
 
-          {/* Tabs */}
           {activeTab === 'orders' && !currentOrder && (
             <AvailableOrders 
               orders={availableOrders}
               onAccept={acceptOrder}
+              riderStatus={riderStatus} 
             />
           )}
 
@@ -128,8 +185,8 @@ const RiderDashboard = () => {
             <ProfileTab 
               profile={profile}
               status={riderStatus}
-              onStatusChange={updateStatus} // ✅ Pass karo
-              onLocationUpdate={updateLocation} // ✅ Pass karo
+              onStatusChange={updateStatus}
+              onLocationUpdate={updateLocation}
             />
           )}
         </div>
