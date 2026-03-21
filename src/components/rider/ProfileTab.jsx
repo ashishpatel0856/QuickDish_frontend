@@ -14,7 +14,6 @@ const ProfileTab = ({ profile, status, onStatusChange, onLocationUpdate }) => {
   const [saving, setSaving] = useState(false);
   const [locating, setLocating] = useState(false);
 
-  // 🔴 FIXED: ONLINE hata diya, sirf 3 status
   const statusOptions = [
     { 
       value: 'AVAILABLE', 
@@ -125,7 +124,6 @@ const ProfileTab = ({ profile, status, onStatusChange, onLocationUpdate }) => {
             Update Status
           </h4>
           
-          {/* 🔴 FIXED: Sirf 3 buttons, grid adjust kiya */}
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
             {statusOptions.map((option) => (
               <button
@@ -149,7 +147,6 @@ const ProfileTab = ({ profile, status, onStatusChange, onLocationUpdate }) => {
             ))}
           </div>
           
-          {/* 🔴 Helper text */}
           <p className="text-xs text-gray-400 mt-3">
             * Busy status is automatically set when you accept an order
           </p>

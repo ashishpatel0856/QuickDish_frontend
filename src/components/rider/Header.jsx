@@ -42,12 +42,6 @@ const Header = ({ activeTab, riderStatus, onStatusChange, onMenuClick }) => {
           </div>
         </div>
 
-        {/* Status Buttons */}
-        <div className="flex items-center gap-2 bg-gray-100 p-1 rounded-full">
-          <StatusBtn status="ONLINE" label="Online" icon={MapPin} color="bg-green-500" />
-          <StatusBtn status="OFFLINE" label="Offline" icon={AlertCircle} color="bg-gray-500" />
-          <StatusBtn status="BUSY" label="Busy" icon={Clock} color="bg-orange-500" />
-        </div>
       </div>
     </header>
   );
