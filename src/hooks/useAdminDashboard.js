@@ -106,12 +106,12 @@ export const useAdminDashboard = (activeTab, user) => {
   // Actions
 const handleApproveRider = async (userId) => {
   if (!userId) {
-    console.error("❌ Invalid riderId:", userId);
+    console.error(" Invalid riderId:", userId);
     return;
   }
 
   try {
-    console.log("✅ Rider ID:", userId);
+    console.log(" Rider ID:", userId);
     await adminAPI.approveRider(userId);
     window.location.reload(); 
   } catch (error) {

@@ -4,7 +4,6 @@ import { useNavigate } from 'react-router-dom';
 import { riderAPI } from '../services/api';
 import { useAuth } from '../context/AuthContext';
 
-// 🔴 ONLINE hata diya - sirf 3 status
 const STATUS = {
   OFFLINE: 'OFFLINE',
   AVAILABLE: 'AVAILABLE', 
@@ -28,7 +27,6 @@ export const useRiderDashboard = () => {
       const { data } = await riderAPI.getProfile();
       if (data) {
         setProfile(data);
-        // Backend se jo status aaye, validate karo
         const validStatus = Object.values(STATUS).includes(data.status) 
           ? data.status 
           : STATUS.OFFLINE;
@@ -114,9 +112,7 @@ export const useRiderDashboard = () => {
     return () => clearInterval(interval);
   }, [riderStatus, fetchCurrentOrder, fetchAvailableOrders]);
 
-  // 🔴 Status update - sirf 3 options
   const updateStatus = async (newStatus) => {
-    // Validate status
     if (!Object.values(STATUS).includes(newStatus)) {
       alert('Invalid status: ' + newStatus);
       return;
@@ -145,38 +141,46 @@ export const useRiderDashboard = () => {
     }
   };
 
-  const updateLocation = useCallback(async () => {
-    if (!navigator.geolocation) {
-      setError('Geolocation not supported');
-      return Promise.reject('Geolocation not supported');
+  // ✅ FIXED: Support object format {latitude, longitude}
+  const updateLocation = useCallback(async (locationData) => {
+    const latitude = parseFloat(locationData?.latitude);
+    const longitude = parseFloat(locationData?.longitude);
+    
+    if (isNaN(latitude) || isNaN(longitude)) {
+      const msg = 'Invalid coordinates. Please enter valid numbers.';
+      setError(msg);
+      alert(msg);
+      return Promise.reject(msg);
     }
 
-    return new Promise((resolve, reject) => {
-      navigator.geolocation.getCurrentPosition(
-        async (position) => {
-          try {
-            const { latitude, longitude } = position.coords;
-            await riderAPI.updateLocation({ latitude, longitude });
-            await fetchProfile();
-            if (riderStatus === STATUS.AVAILABLE) {
-              await fetchAvailableOrders();
-            }
-            setError(null);
-            resolve({ latitude, longitude });
-          } catch (err) {
-            setError('Failed to update location');
-            reject(err);
-          }
-        },
-        (err) => {
-          const message = 'Please enable location permissions';
-          setError(message);
-          alert(message);
-          reject(err);
-        },
-        { enableHighAccuracy: true, timeout: 10000, maximumAge: 0 }
-      );
-    });
+    if (latitude < -90 || latitude > 90 || longitude < -180 || longitude > 180) {
+      const msg = 'Coordinates out of valid range.';
+      setError(msg);
+      alert(msg);
+      return Promise.reject(msg);
+    }
+
+    try {
+      setLoading(true);
+      console.log('Updating location:', { latitude, longitude });
+      
+      await riderAPI.updateLocation({ latitude, longitude });
+      await fetchProfile();
+      
+      if (riderStatus === STATUS.AVAILABLE) {
+        await fetchAvailableOrders();
+      }
+      
+      setError(null);
+      return { latitude, longitude };
+    } catch (err) {
+      const message = err.response?.data?.message || 'Failed to update location';
+      setError(message);
+      alert(message);
+      throw err;
+    } finally {
+      setLoading(false);
+    }
   }, [riderStatus, fetchProfile, fetchAvailableOrders]);
 
   const acceptOrder = async (orderId) => {
@@ -216,7 +220,6 @@ export const useRiderDashboard = () => {
     }
   };
 
-  // 🔴 Export STATUS for UI use
   return {
     profile,
     earnings,

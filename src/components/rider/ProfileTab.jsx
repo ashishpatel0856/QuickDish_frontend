@@ -35,11 +35,10 @@ const ProfileTab = ({ profile, status, onStatusChange, onLocationUpdate }) => {
       color: 'bg-orange-500', 
       icon: Clock, 
       desc: 'On delivery', 
-      disabled: true // Auto set hota hai
+      disabled: true
     }
   ];
 
-  // Get current location using Geolocation API
   const getCurrentLocation = () => {
     setLocating(true);
     if (!navigator.geolocation) {
@@ -64,7 +63,6 @@ const ProfileTab = ({ profile, status, onStatusChange, onLocationUpdate }) => {
     );
   };
 
-  // Save location to backend
   const handleSaveLocation = async () => {
     if (!location.latitude || !location.longitude) {
       alert('Please enter both latitude and longitude');
@@ -86,7 +84,6 @@ const ProfileTab = ({ profile, status, onStatusChange, onLocationUpdate }) => {
     }
   };
 
-  // Profile fields display
   const fields = [
     { label: 'Phone', value: profile?.phone, icon: Phone },
     { label: 'Vehicle Number', value: profile?.vehicleNumber, isMono: true, icon: Bike },
