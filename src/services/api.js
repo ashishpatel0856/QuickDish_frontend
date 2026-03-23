@@ -111,6 +111,7 @@ export const riderAPI = {
   getOrderHistory: (page = 0) => api.get(`/riders/orders/history?page=${page}`),
   
   arriveAtRestaurant: (assignmentId) => api.put(`/riders/orders/${assignmentId}/arrive-restaurant`),
+  
   pickupOrder: (assignmentId, otp) => api.put(`/riders/orders/${assignmentId}/pickup`, { otp }),
   arriveAtCustomer: (assignmentId) => api.put(`/riders/orders/${assignmentId}/arrive-customer`),
   deliverOrder: (assignmentId, otp) => api.put(`/riders/orders/${assignmentId}/deliver`, { otp }),

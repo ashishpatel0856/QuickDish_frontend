@@ -55,11 +55,15 @@ export const useRiderDashboard = () => {
     }
   }, []);
 
+  // ✅ FIXED: Add debug logging
   const fetchCurrentOrder = useCallback(async () => {
     try {
+      console.log('🔍 Fetching current order...');
       const { data } = await riderAPI.getCurrentOrder();
+      console.log('✅ Current order data:', data);
       setCurrentOrder(data);
     } catch (err) {
+      console.error('❌ Current order error:', err);
       setCurrentOrder(null);
     }
   }, []);
@@ -108,7 +112,7 @@ export const useRiderDashboard = () => {
       if (riderStatus === STATUS.AVAILABLE) {
         fetchAvailableOrders();
       }
-    }, 15000);
+    }, 5000);  // ✅ 5 seconds for faster refresh
     return () => clearInterval(interval);
   }, [riderStatus, fetchCurrentOrder, fetchAvailableOrders]);
 
@@ -141,20 +145,12 @@ export const useRiderDashboard = () => {
     }
   };
 
-  // ✅ FIXED: Support object format {latitude, longitude}
   const updateLocation = useCallback(async (locationData) => {
     const latitude = parseFloat(locationData?.latitude);
     const longitude = parseFloat(locationData?.longitude);
     
     if (isNaN(latitude) || isNaN(longitude)) {
-      const msg = 'Invalid coordinates. Please enter valid numbers.';
-      setError(msg);
-      alert(msg);
-      return Promise.reject(msg);
-    }
-
-    if (latitude < -90 || latitude > 90 || longitude < -180 || longitude > 180) {
-      const msg = 'Coordinates out of valid range.';
+      const msg = 'Invalid coordinates';
       setError(msg);
       alert(msg);
       return Promise.reject(msg);
@@ -162,8 +158,6 @@ export const useRiderDashboard = () => {
 
     try {
       setLoading(true);
-      console.log('Updating location:', { latitude, longitude });
-      
       await riderAPI.updateLocation({ latitude, longitude });
       await fetchProfile();
       
@@ -183,13 +177,25 @@ export const useRiderDashboard = () => {
     }
   }, [riderStatus, fetchProfile, fetchAvailableOrders]);
 
+  // ✅ FIXED: Clear available orders after accept
   const acceptOrder = async (orderId) => {
     try {
       setLoading(true);
+      console.log('Accepting order:', orderId);
+      
       await riderAPI.acceptOrder(orderId);
-      await Promise.all([fetchCurrentOrder(), fetchProfile()]);
+      
+      // ✅ Immediately fetch current order
+      await fetchCurrentOrder();
+      await fetchProfile();
+      
+      // ✅ Clear available orders
+      setAvailableOrders([]);
+      
       setError(null);
+      console.log('Order accepted successfully');
     } catch (err) {
+      console.error('Accept order error:', err);
       const message = err.response?.data?.message || 'Failed to accept order';
       setError(message);
       alert(message);
@@ -198,10 +204,15 @@ export const useRiderDashboard = () => {
     }
   };
 
+  // ✅ FIXED: Use assignmentId
   const handlePickup = async (otp) => {
-    if (!currentOrder?.id) return;
+    if (!currentOrder?.assignmentId) {
+      alert('No active order');
+      return;
+    }
     try {
-      await riderAPI.pickupOrder(currentOrder.id, otp);
+      console.log('Pickup with assignmentId:', currentOrder.assignmentId);
+      await riderAPI.pickupOrder(currentOrder.assignmentId, otp);
       await fetchCurrentOrder();
     } catch (err) {
       alert(err.response?.data?.message || 'Invalid OTP');
@@ -209,10 +220,15 @@ export const useRiderDashboard = () => {
     }
   };
 
+  // ✅ FIXED: Use assignmentId
   const handleDeliver = async (otp) => {
-    if (!currentOrder?.id) return;
+    if (!currentOrder?.assignmentId) {
+      alert('No active order');
+      return;
+    }
     try {
-      await riderAPI.deliverOrder(currentOrder.id, otp);
+      console.log('Deliver with assignmentId:', currentOrder.assignmentId);
+      await riderAPI.deliverOrder(currentOrder.assignmentId, otp);
       await Promise.all([fetchCurrentOrder(), fetchProfile()]);
     } catch (err) {
       alert(err.response?.data?.message || 'Invalid OTP');

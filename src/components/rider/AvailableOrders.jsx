@@ -20,7 +20,7 @@ const AvailableOrders = ({ orders, onAccept }) => {
     <div className="space-y-4">
       <h3 className="text-lg font-bold text-gray-900 mb-4">Available Orders</h3>
       {orders.map((order) => (
-        <div key={order.id} className="bg-white rounded-2xl p-6 shadow-sm border border-gray-200 hover:shadow-md transition-shadow">
+        <div key={order.orderId} className="bg-white rounded-2xl p-6 shadow-sm border border-gray-200 hover:shadow-md transition-shadow">
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
             <div className="flex-1">
               <div className="flex items-center gap-3 mb-2">
@@ -41,7 +41,7 @@ const AvailableOrders = ({ orders, onAccept }) => {
               </div>
             </div>
             <button
-              onClick={() => onAccept(order.id)}
+              onClick={() => onAccept(order.orderId)}
               className="w-full sm:w-auto bg-gradient-to-r from-orange-500 to-red-500 text-white px-6 py-3 rounded-xl font-bold hover:from-orange-600 hover:to-red-600 transition-all shadow-lg shadow-orange-500/30 flex items-center justify-center gap-2"
             >
               Accept
