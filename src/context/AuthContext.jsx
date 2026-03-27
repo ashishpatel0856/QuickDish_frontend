@@ -42,7 +42,6 @@ export const AuthProvider = ({ children }) => {
 
  const login = async (credentials) => {
   try {
-    console.log(' Attempting login...');
     const response = await authAPI.login(credentials);
     
     const responseData = response.data?.data || response.data;
@@ -63,12 +62,9 @@ export const AuthProvider = ({ children }) => {
 
     setUser(userData);
     setIsAuthenticated(true);
-
-    console.log(' Login successful:', userData);
     return { success: true, user: userData };
     
   } catch (error) {
-    console.error(' Login error:', error);
     return { success: false, error: error.response?.data?.message || 'Login failed' };
   }
 };
@@ -78,7 +74,6 @@ export const AuthProvider = ({ children }) => {
       const response = await authAPI.signup(userData);
       return { success: true, data: response.data };
     } catch (error) {
-      console.error(' Signup error:', error);
       return { 
         success: false, 
         error: error.response?.data?.message || 'Signup failed' 
@@ -106,7 +101,6 @@ export const AuthProvider = ({ children }) => {
     delete api.defaults.headers.common['Authorization'];
     setUser(null);
     setIsAuthenticated(false);
-    console.log(' Logged out successfully');
     window.location.href = '/login';
   }, []);
 

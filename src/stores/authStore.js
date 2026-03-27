@@ -12,7 +12,7 @@ export const useAuthStore = create(
       login: (userData, tokens) => {
         localStorage.setItem('accessToken', tokens.accessToken);
         localStorage.setItem('refreshToken', tokens.refreshToken);
-        localStorage.setItem('userRole', userData.role); // Store role
+        localStorage.setItem('userRole', userData.role); 
         
         set({ 
           user: userData, 

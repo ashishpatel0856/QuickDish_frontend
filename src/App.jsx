@@ -37,6 +37,7 @@ const PageLoader = () => (
   </div>
 );
 
+
 const ProtectedRoute = ({ children, allowedRoles }) => {
   const { isAuthenticated, user, loading } = useAuth();
 
@@ -74,14 +75,12 @@ const PublicRoute = ({ children }) => {
 
     return <Navigate to="/" replace />;
   }
-
   return children;
 };
 
 function App() {
 
   return (
-
     <Routes>
       <Route element={<AuthLayout />}>
         <Route path="/login" element={<PublicRoute><Login /></PublicRoute>} />

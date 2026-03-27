@@ -21,7 +21,7 @@ const Login = () => {
     }
   }, [isAuthenticated, user]);
 
-  // 🆕 Role-based redirect function
+  //  Role-based redirect function
   const handleRoleBasedRedirect = (userData) => {
     const userRoles = userData?.roles || [];
     
@@ -65,7 +65,7 @@ const Login = () => {
       
       
       if (result.success && result.user) {
-        console.log(' Login successful, waiting for state update...');
+        console.log(' Login successful, waiting for state update');
       } else {
         setError(result.error || 'Login failed');
       }
@@ -139,7 +139,7 @@ const Login = () => {
               <span className="ml-2 text-sm text-gray-600">Remember me</span>
             </label>
             <Link to="/forgot-password" className="text-sm text-orange-600 hover:text-orange-700 font-medium">
-              Forgot Password?
+              Forgot Password
             </Link>
           </div>
 

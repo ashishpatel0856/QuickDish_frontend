@@ -15,9 +15,7 @@ export const CartProvider = ({ children }) => {
   const [cartSummary, setCartSummary] = useState({ total: 0, itemCount: 0 });
   const [loading, setLoading] = useState(false);
   const { user, isAuthenticated } = useAuth();
-  
-  // 🔥🔥🔥 FIX: Skip loading flag
-  const skipNextLoad = useRef(false);
+    const skipNextLoad = useRef(false);
 
   const currentUserId = user?.id;
 
@@ -27,7 +25,6 @@ export const CartProvider = ({ children }) => {
   }, []);
 
   useEffect(() => {
-    // 🔥🔥🔥 Skip agar clearCart() se flag set hua hai
     if (skipNextLoad.current) {
       skipNextLoad.current = false;
       console.log("⏭️ Skipping loadCart due to clearCart");
@@ -116,33 +113,24 @@ export const CartProvider = ({ children }) => {
     }
   };
 
-  // 🔥🔥🔥 FIX: Proper clearCart with skip flag
   const clearCart = useCallback(async () => {
     const userId = currentUserId;
-    
-    // 🔥 Pehle flag set karo
     skipNextLoad.current = true;
     
-    // 🔥 State immediately clear karo
     setCartItems([]);
     setCartSummary({ total: 0, itemCount: 0 });
     localStorage.removeItem('currentRestaurantId');
     
-    console.log("🧹 Cart cleared locally, skipNextLoad = true");
     
-    // Backend call async (fail bhi ho sakti hai, par UI clear ho chuki)
     if (userId) {
       try {
         await cartAPI.clear(userId);
-        console.log("✅ Backend cart cleared");
       } catch (err) {
         console.error('Backend clear failed:', err);
-        // Local already cleared, so it's fine
       }
     }
   }, [currentUserId]);
 
-  // Values cartSummary se lo
   const cartCount = cartSummary.itemCount;
   const cartTotal = cartSummary.total;
 
