@@ -7,11 +7,22 @@ const Profile = () => {
   const { user, updateUser } = useAuth();
   const [editing, setEditing] = useState(false);
   const [saving, setSaving] = useState(false);
-  const [formData, setFormData] = useState({ name: '', email: '', phone: '', address: { street: '', city: '', state: '', pinCode: '' } });
+  const [formData, setFormData] = useState({
+    name: '',
+    email: '',
+    phone: '',
+    address: { street: '', city: '', state: '', pinCode: '' }
+  });
 
   useEffect(() => {
     if (user) {
-      setFormData({ name: user.name || '', email: user.email || '', phone: user.phone || '', address: user.address || { street: '', city: '', state: '', pinCode: '' } });
+      setFormData({
+        name: user.name || '',
+        email: user.email || '',
+        phone: user.phone || '',
+        address: user.address ||
+          { street: '', city: '', state: '', pinCode: '' }
+      });
     }
   }, [user]);
 
@@ -101,7 +112,8 @@ const Profile = () => {
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2"><MapPin className="w-4 h-4 inline mr-2" />Address</label>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    <MapPin className="w-4 h-4 inline mr-2" />Address</label>
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
 
                     <input type="text" name="address.street"

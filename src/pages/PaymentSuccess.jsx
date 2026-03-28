@@ -1,13 +1,13 @@
 import { useEffect, useState } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
-import { useCart } from '../context/CartContext';  // 🔥 Import karo
+import { useCart } from '../context/CartContext'; 
 import { orderAPI } from '../services/api';
 import { CheckCircle, Loader2, Clock } from 'lucide-react';
 
 const PaymentSuccess = () => {
   const [searchParams] = useSearchParams();
   const navigate = useNavigate();
-  const { clearCart } = useCart();  // 🔥 useCart se clearCart lo
+  const { clearCart } = useCart();  
   const [status, setStatus] = useState('verifying');  
   const orderId = searchParams.get('orderId');
 
@@ -33,11 +33,10 @@ const PaymentSuccess = () => {
             clearInterval(checkInterval);
             setStatus('success');
             
-            // 🔥🔥🔥 CART CLEAR KARO YAHAN!
             try {
               await clearCart();
               localStorage.removeItem('currentRestaurantId');
-              console.log("✅ Cart cleared after payment success");
+              console.log(" Cart cleared after payment success");
             } catch (cartErr) {
               console.error("Cart clear failed:", cartErr);
             }
@@ -56,11 +55,9 @@ const PaymentSuccess = () => {
                 clearInterval(checkInterval);
                 setStatus('success');
                 
-                // 🔥🔥🔥 YAHAN BHI CART CLEAR KARO!
                 try {
                   await clearCart();
                   localStorage.removeItem('currentRestaurantId');
-                  console.log("✅ Cart cleared after force verify success");
                 } catch (cartErr) {
                   console.error("Cart clear failed:", cartErr);
                 }
@@ -115,7 +112,7 @@ const PaymentSuccess = () => {
         {status === 'failed' && (
           <>
             <div className="w-20 h-20 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-4">
-              <span className="text-3xl">❌</span>
+              <span className="text-3xl">X</span>
             </div>
             <h1 className="text-2xl font-bold mb-2 text-red-700">Verification Failed</h1>
             <p className="text-gray-500 mb-4">We couldn't verify your payment</p>

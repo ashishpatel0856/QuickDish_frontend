@@ -530,7 +530,6 @@ const Signup = () => {
                       </div>
                     </div>
 
-                    {/* Info Note */}
                     <div className="bg-yellow-50 border border-yellow-200 rounded-xl p-4">
                       <p className="text-sm text-yellow-800">
                         {/* <strong> Document Upload:</strong> You'll need to upload scanned copies of GST certificate, PAN card, FSSAI license and cancelled cheque in your dashboard after email verification. */}
