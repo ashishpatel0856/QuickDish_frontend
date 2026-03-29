@@ -3,16 +3,7 @@ import {
   Clock, Store, Building2, CheckCircle2 
 } from 'lucide-react';
 
-const iconMap = {
-  Users,
-  CheckCircle,
-  CheckCircle2,
-  Bike,
-  DollarSign,
-  Clock,
-  Store,
-  Building2
-};
+const iconMap = { Users, CheckCircle, CheckCircle2,Bike,DollarSign,Clock,Store,Building2};
 
 const StatCard = ({ title, value, icon, color, trend, subtitle }) => {
   const Icon = iconMap[icon] || DollarSign;

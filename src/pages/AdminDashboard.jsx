@@ -18,7 +18,6 @@ const AdminDashboard = () => {
   const [activeTab, setActiveTab] = useState('riders-pending');
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
-  // Modal states
   const [selectedRider, setSelectedRider] = useState(null);
   const [selectedOwner, setSelectedOwner] = useState(null);
   const [showRiderModal, setShowRiderModal] = useState(false);

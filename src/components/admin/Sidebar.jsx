@@ -1,6 +1,4 @@
-import { 
-  Users, CheckCircle, Bike, LogOut, Clock, Store, Building2, Shield 
-} from 'lucide-react';
+import {Users, CheckCircle, Bike, LogOut, Clock, Store, Building2,} from 'lucide-react';
 
 const Sidebar = ({ activeTab, onTabChange, isOpen, onClose, stats, onLogout }) => {
   const TabButton = ({ id, icon: Icon, label, count, colorClass, activeClass }) => (
@@ -9,16 +7,14 @@ const Sidebar = ({ activeTab, onTabChange, isOpen, onClose, stats, onLogout }) =
         onTabChange(id);
         onClose();
       }}
-      className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl transition-all ${
-        activeTab === id ? activeClass : 'text-gray-600 hover:bg-gray-50'
-      }`}
+      className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl transition-all ${activeTab === id ? activeClass : 'text-gray-600 hover:bg-gray-50'
+        }`}
     >
       <Icon className="w-5 h-5" />
       <span className="font-medium">{label}</span>
       {count > 0 && (
-        <span className={`ml-auto text-white text-xs font-bold px-2 py-1 rounded-full ${
-          activeTab === id ? 'bg-white/20' : 'bg-orange-500'
-        }`}>
+        <span className={`ml-auto text-white text-xs font-bold px-2 py-1 rounded-full ${activeTab === id ? 'bg-white/20' : 'bg-orange-500'
+          }`}>
           {count}
         </span>
       )}
@@ -31,11 +27,15 @@ const Sidebar = ({ activeTab, onTabChange, isOpen, onClose, stats, onLogout }) =
       transform transition-transform duration-300 ease-in-out
       ${isOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'}
     `}>
+
+
       <div className="p-6 border-b border-gray-100">
         <div className="flex items-center gap-3">
-          <div className="w-10 h-10 bg-gradient-to-br from-orange-500 to-red-500 rounded-xl flex items-center justify-center">
-            <Shield className="w-6 h-6 text-white" />
-          </div>
+          <img
+            src="/QD.png"
+            alt="QuickDish"
+            className="h-10 w-auto object-contain"
+          />
           <div>
             <h1 className="font-bold text-gray-900">QuickDish</h1>
             <p className="text-xs text-gray-500">Admin Panel</p>
@@ -49,7 +49,7 @@ const Sidebar = ({ activeTab, onTabChange, isOpen, onClose, stats, onLogout }) =
           <p className="px-4 py-2 text-xs font-semibold text-gray-400 uppercase tracking-wider">
             Delivery Partners
           </p>
-          
+
           <TabButton
             id="riders-pending"
             icon={Clock}
@@ -78,7 +78,7 @@ const Sidebar = ({ activeTab, onTabChange, isOpen, onClose, stats, onLogout }) =
           <p className="px-4 py-2 text-xs font-semibold text-gray-400 uppercase tracking-wider">
             Restaurant Partners
           </p>
-          
+
           <TabButton
             id="owners-pending"
             icon={Store}
@@ -117,3 +117,6 @@ const Sidebar = ({ activeTab, onTabChange, isOpen, onClose, stats, onLogout }) =
 };
 
 export default Sidebar;
+
+
+// https://rec-test.infosys.com/iwa-web/en/systemCheck/cameraCheck
