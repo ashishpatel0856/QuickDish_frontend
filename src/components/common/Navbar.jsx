@@ -133,16 +133,15 @@ const Navbar = () => {
             {/*  Logo + Location */}
             <div className="flex items-center gap-4 lg:gap-8">
               {/* Logo */}
+              
               <Link 
                 to="/" 
-                className="flex items-center gap-2 group"
-                onClick={() => setMobileMenuOpen(false)}
-              >
+                className="flex items-center gap-2 group "
+                onClick={() => setMobileMenuOpen(false)} >
                 <img 
                   src="/QD.png" 
                   alt="QuickDish" 
-                  className="h-8 w-auto object-contain group-hover:scale-105 transition-transform"
-                />
+                  className="h-8 w-auto object-contain group-hover:scale-105 transition-transform"/>
                 <span className="text-xl lg:text-2xl font-bold text-orange-500 tracking-tight hidden sm:block group-hover:text-orange-600 transition-colors">
                   QuickDish
                 </span>
@@ -153,8 +152,8 @@ const Navbar = () => {
                 <div className="relative hidden lg:block" ref={locationRef}>
                   <button
                     onClick={() => setShowLocationDropdown(!showLocationDropdown)}
-                    className="flex items-center gap-2 text-gray-700 hover:text-orange-500 transition-colors"
-                  >
+                    className="flex items-center gap-2 text-gray-700 hover:text-orange-500 transition-colors">
+
                     <MapPin className="w-5 h-5 text-orange-500" />
                     <div className="flex flex-col items-start">
                       <span className="text-xs font-medium text-gray-500">Deliver to</span>
@@ -209,7 +208,7 @@ const Navbar = () => {
 
             {/*  Actions */}
             <div className="flex items-center gap-2 lg:gap-6">
-              {/* Help - Desktop */}
+              {/* Help  Desktop */}
               <Link
                 to="/help"
                 className="hidden lg:flex items-center gap-2 text-gray-700 hover:text-orange-500 font-medium transition-colors"
@@ -222,8 +221,7 @@ const Navbar = () => {
               {isAuthenticated && (
                 <Link
                   to="/cart"
-                  className="flex items-center gap-1 lg:gap-2 text-gray-700 hover:text-orange-500 font-medium transition-colors relative"
-                >
+                  className="flex items-center gap-1 lg:gap-2 text-gray-700 hover:text-orange-500 font-medium transition-colors relative">
                   <div className="relative">
                     <ShoppingCart className="w-6 h-6" />
                     {cartCount > 0 && (
