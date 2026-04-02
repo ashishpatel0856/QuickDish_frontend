@@ -1,4 +1,4 @@
-import { Search, Filter, Bike, Phone, CheckCircle, XCircle, MoreVertical } from 'lucide-react';
+import { Search, Filter, Bike, Phone, CheckCircle, XCircle, MoreVertical, CreditCard } from 'lucide-react';
 import LoadingSpinner from '../common/LoadingSpinner';
 
 const RidersTable = ({ riders, loading, activeTab, actions }) => {
@@ -35,10 +35,10 @@ const RidersTable = ({ riders, loading, activeTab, actions }) => {
         <div className="flex items-center gap-3">
           <div className="relative">
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
-            <input 
-              type="text" 
-              placeholder="Search riders..." 
-              className="pl-9 pr-4 py-2 border border-gray-200 rounded-lg text-sm focus:outline-none focus:border-orange-500 focus:ring-2 focus:ring-orange-500/20 w-full sm:w-auto" 
+            <input
+              type="text"
+              placeholder="Search riders..."
+              className="pl-9 pr-4 py-2 border border-gray-200 rounded-lg text-sm focus:outline-none focus:border-orange-500 focus:ring-2 focus:ring-orange-500/20 w-full sm:w-auto"
             />
           </div>
           <button className="p-2 hover:bg-gray-100 rounded-lg border border-gray-200">
@@ -51,11 +51,12 @@ const RidersTable = ({ riders, loading, activeTab, actions }) => {
         <table className="w-full">
           <thead className="bg-gray-50">
             <tr>
-              <th className="px-6 py-4 text-left text-xs font-semibold text-gray-500 uppercase">Rider</th>
-              <th className="px-6 py-4 text-left text-xs font-semibold text-gray-500 uppercase hidden sm:table-cell">Contact</th>
-              <th className="px-6 py-4 text-left text-xs font-semibold text-gray-500 uppercase hidden md:table-cell">Vehicle</th>
-              <th className="px-6 py-4 text-left text-xs font-semibold text-gray-500 uppercase">Status</th>
-              <th className="px-6 py-4 text-right text-xs font-semibold text-gray-500 uppercase">Actions</th>
+              <th className="px-6 py-4 text-left text-xs font-semibold text-black uppercase">Rider</th>
+              <th className="px-6 py-4 text-left text-xs font-semibold text-black uppercase hidden sm:table-cell">Contact</th>
+              <th className="px-6 py-4 text-left text-xs font-semibold text-black uppercase hidden md:table-cell">Vehicle</th>
+              <th className="px-6 py-4 text-left text-xs font-semibold text-black uppercase hidden lg:table-cell">License</th>
+              <th className="px-6 py-4 text-left text-xs font-semibold text-black uppercase">Status</th>
+              <th className="px-6 py-4 text-right text-xs font-semibold text-black uppercase">Actions</th>
             </tr>
           </thead>
           <tbody className="divide-y divide-gray-100">
@@ -64,54 +65,68 @@ const RidersTable = ({ riders, loading, activeTab, actions }) => {
                 <td className="px-6 py-4">
                   <div className="flex items-center gap-3">
                     <div className="w-10 h-10 bg-gradient-to-br from-orange-400 to-red-400 rounded-full flex items-center justify-center text-white font-bold">
-                      {rider.user?.name?.charAt(0) || 'R'}
+                      {rider.name?.charAt(0) || 'R'}
                     </div>
                     <div>
-                      <p className="font-semibold text-gray-900">{rider.user?.name || 'Unknown'}</p>
-                      <p className="text-sm text-gray-500">{rider.user?.email}</p>
+                      <p className="font-semibold text-gray-900">{rider.name || 'Unknown'}</p>
+                      <p className="text-sm text-gray-500">{rider.email || 'N/A'}</p>
                     </div>
                   </div>
                 </td>
                 <td className="px-6 py-4 hidden sm:table-cell">
                   <div className="flex items-center gap-2 text-sm text-gray-600">
                     <Phone className="w-4 h-4" />
-                    {rider.user?.phone || 'N/A'}
+                    {rider.phone || 'N/A'}
                   </div>
                 </td>
                 <td className="px-6 py-4 hidden md:table-cell">
-                  <p className="text-sm text-gray-900 capitalize">{rider.vehicleType?.toLowerCase()}</p>
-                  <p className="text-xs text-gray-500 font-mono">{rider.vehicleNumber}</p>
+                  <p className="text-sm text-gray-900 capitalize">{rider.vehicleType?.toLowerCase() || 'bike'}</p>
+                  <p className="text-xs text-gray-500 font-mono">{rider.vehicleNumber || 'N/A'}</p>
+                </td>
+
+                <td className="px-6 py-4 hidden lg:table-cell">
+                  <div className="flex items-center gap-2 text-sm text-gray-600">
+                    <CreditCard className="w-4 h-4 text-gray-400" />
+                    <span className="font-mono text-xs">{rider.licenseNumber || 'N/A'}</span>
+                  </div>
                 </td>
                 <td className="px-6 py-4">
+
                   <span className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-medium ${
-                    rider.isVerifiedRider ? 'bg-green-100 text-green-700' : 'bg-yellow-100 text-yellow-700'
+                    rider.status === 'APPROVED' || rider.isVerifiedRider 
+                      ? 'bg-green-100 text-green-700' 
+                      : 'bg-yellow-100 text-yellow-700'
                   }`}>
-                    <div className={`w-1.5 h-1.5 rounded-full ${rider.isVerifiedRider ? 'bg-green-500' : 'bg-yellow-500'}`}></div>
-                    {rider.isVerifiedRider ? 'Approved' : 'Pending'}
+                    <div className={`w-1.5 h-1.5 rounded-full ${
+                      rider.status === 'APPROVED' || rider.isVerifiedRider 
+                        ? 'bg-green-500' 
+                        : 'bg-yellow-500'
+                    }`}></div>
+                    {rider.status === 'APPROVED' || rider.isVerifiedRider ? 'Approved' : 'Pending'}
                   </span>
                 </td>
                 <td className="px-6 py-4 text-right">
                   <div className="flex items-center justify-end gap-2">
-                    {!rider.isVerifiedRider ? (
+                    {(!rider.isVerifiedRider && rider.status !== 'APPROVED') ? (
                       <>
-                        <button 
-  onClick={() => actions.onApproveRider(rider.id)} 
-  className="p-2 bg-green-500 hover:bg-green-600 text-white rounded-lg transition-colors" 
-  title="Approve"
->
-  <CheckCircle className="w-4 h-4" />
-</button>
-                        <button 
-                          onClick={() => actions.onRejectRider(rider.id)} 
-                          className="p-2 bg-red-500 hover:bg-red-600 text-white rounded-lg transition-colors" 
+                        <button
+                          onClick={() => actions.onApproveRider(rider.id)}
+                          className="p-2 bg-green-500 hover:bg-green-600 text-white rounded-lg transition-colors"
+                          title="Approve"
+                        >
+                          <CheckCircle className="w-4 h-4" />
+                        </button>
+                        <button
+                          onClick={() => actions.onRejectRider(rider.id)}
+                          className="p-2 bg-red-500 hover:bg-red-600 text-white rounded-lg transition-colors"
                           title="Reject"
                         >
                           <XCircle className="w-4 h-4" />
                         </button>
                       </>
                     ) : (
-                      <button 
-                        onClick={() => actions.onViewRider(rider)} 
+                      <button
+                        onClick={() => actions.onViewRider(rider)}
                         className="p-2 hover:bg-gray-100 rounded-lg transition-colors"
                       >
                         <MoreVertical className="w-4 h-4 text-gray-600" />

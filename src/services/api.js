@@ -135,9 +135,8 @@ export const adminAPI = {
   approveOwner: (ownerId) => api.put(`/admin/owners/${ownerId}/approve`),
   rejectOwner: (ownerId) => api.delete(`/admin/owners/${ownerId}/reject`),
   verifyOwnerDocuments: (ownerId, approved, reason) => 
-    api.put(`/admin/owners/${ownerId}/verify-documents?approved=${approved}&rejectionReason=${encodeURIComponent(reason || '')}`),
+  api.put(`/admin/owners/${ownerId}/verify-documents?approved=${approved}&rejectionReason=${encodeURIComponent(reason || '')}`),
   
-  // Stats
   getPlatformEarnings: () => api.get('/admin/earnings'),
 };
 

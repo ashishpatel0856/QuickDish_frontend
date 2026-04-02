@@ -13,6 +13,8 @@ const VerifyOTP = () => {
   
   const email = location.state?.email;
 
+  const BACKGROUND_IMAGE = 'https://images.unsplash.com/photo-1504674900247-0877df9cc836?w=1920&q=80';
+
   if (!email) {
     navigate('/login');
     return null;
@@ -35,53 +37,75 @@ const VerifyOTP = () => {
     setLoading(false);
   };
 
-  return (
-    <div className="min-h-screen bg-gradient-to-br from-primary-50 via-orange-50 to-secondary-50 flex items-center justify-center p-4">
-      <div className="bg-white rounded-2xl shadow-xl p-8 w-full max-w-md">
-        <div className="text-center mb-8">
-          <div className="w-16 h-16 bg-primary-100 rounded-full flex items-center justify-center mx-auto mb-4">
-            <Mail className="w-8 h-8 text-primary-500" />
-          </div>
-          <h2 className="text-2xl font-bold text-gray-900">Verify Email</h2>
-          <p className="text-gray-500 mt-2">Enter OTP sent to {email}</p>
+return (
+  <div className="relative w-full min-h-screen flex items-center justify-center overflow-hidden">
+
+    {/* Full Screen Background */}
+    <div 
+      className="fixed inset-0 w-full h-full bg-cover bg-center bg-no-repeat"
+      style={{ backgroundImage: `url(${BACKGROUND_IMAGE})` }}
+    />
+
+    {/* Blur Overlay */}
+    <div className="fixed inset-0 bg-black/40 backdrop-blur-sm" />
+
+    {/* Content */}
+    <div className="relative z-10 w-full max-w-md p-8 rounded-2xl 
+                    bg-white/10 backdrop-blur-xl border border-white/20 
+                    shadow-2xl">
+
+      {/* Your existing UI */}
+      <div className="text-center mb-8 text-white">
+        <div className="w-16 h-16 bg-white/20 rounded-full flex items-center justify-center mx-auto mb-4">
+          <Mail className="w-8 h-8 text-white" />
         </div>
 
-        {error && <div className="mb-6 p-4 bg-red-50 border border-red-200 rounded-xl text-red-600 text-sm">{error}</div>}
+        <h2 className="text-2xl font-bold">Verify Email</h2>
+        <p className="text-gray-200 mt-2">
+          Enter OTP sent to {email}
+        </p>
+      </div>
 
-        <form onSubmit={handleSubmit} className="space-y-6">
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">OTP Code</label>
-            <input 
-              type="number" 
-              value={otp} 
-              onChange={(e) => setOtp(e.target.value)} 
-              required
-              className="w-full px-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-primary-500 text-center text-2xl tracking-widest"
-              placeholder="000000"
-              maxLength={6}
-            />
-          </div>
-
-          <button 
-            type="submit" 
-            disabled={loading || otp.length < 4}
-            className="w-full py-3.5 bg-gradient-to-r from-primary-500 to-primary-600 text-white rounded-xl font-semibold hover:from-primary-600 hover:to-primary-700 disabled:opacity-50 flex items-center justify-center"
-          >
-            {loading ? <><Loader2 className="w-5 h-5 animate-spin mr-2" /><span>Verifying...</span></> : <span>Verify OTP</span>}
-          </button>
-        </form>
-
-        <div className="mt-6 text-center">
-          <button 
-            onClick={() => navigate('/signup')} 
-            className="text-sm text-primary-600 hover:text-primary-700"
-          >
-            ← Back to Signup
-          </button>
+      {error && (
+        <div className="mb-6 p-3 bg-red-500/20 border border-red-400/40 rounded-lg text-red-200 text-sm">
+          {error}
         </div>
+      )}
+
+      <form onSubmit={handleSubmit} className="space-y-6">
+        <input 
+          type="number"
+          value={otp}
+          onChange={(e) => setOtp(e.target.value)}
+          placeholder="000000"
+          className="w-full px-4 py-3 rounded-xl bg-white/20 text-white text-center text-2xl tracking-widest border border-white/30 focus:ring-2 focus:ring-orange-400"
+        />
+
+        <button 
+          type="submit"
+          disabled={loading || otp.length < 4}
+          className="w-full py-3.5 rounded-xl bg-gradient-to-r from-orange-500 to-orange-600 text-white font-semibold"
+        >
+          {loading ? (
+            <span className="flex items-center justify-center">
+              <Loader2 className="w-5 h-5 animate-spin mr-2" />
+              Verifying...
+            </span>
+          ) : "Verify OTP"}
+        </button>
+      </form>
+
+      <div className="mt-6 text-center">
+        <button 
+          onClick={() => navigate('/signup')}
+          className="text-orange-300 hover:text-orange-200"
+        >
+          Back to Signup
+        </button>
       </div>
     </div>
-  );
+  </div>
+);
 };
 
 export default VerifyOTP;

@@ -60,12 +60,9 @@ const RiderDashboard = () => {
     setShowOtpModal(true);
   };
 
-  // ✅ DEBUG: Console me check karo
-  console.log('Active Tab:', activeTab);
-  console.log('Profile:', profile);
-  console.log('Earnings:', earnings);
 
-  // ✅ RENDER CONTENT BASED ON ACTIVE TAB
+
+  //  RENDER CONTENT BASED ON ACTIVE TAB
   const renderContent = () => {
     switch (activeTab) {
       case 'orders':
@@ -80,9 +77,9 @@ const RiderDashboard = () => {
                     <div>
                       <p className="text-sm opacity-90">Order #{currentOrder.orderId}</p>
                       <h2 className="text-xl font-bold">
-                        {currentOrder.status === 'ASSIGNED' && '📍 Go to Restaurant'}
-                        {currentOrder.status === 'PICKED_UP' && '🛵 Deliver to Customer'}
-                        {currentOrder.status === 'ON_THE_WAY' && '🏠 Arrived at Customer'}
+                        {currentOrder.status === 'ASSIGNED' && ' Go to Restaurant'}
+                        {currentOrder.status === 'PICKED_UP' && ' Deliver to Customer'}
+                        {currentOrder.status === 'ON_THE_WAY' && ' Arrived at Customer'}
                       </h2>
                     </div>
                     <div className="text-right">
@@ -131,7 +128,7 @@ const RiderDashboard = () => {
                     <div className="flex-1">
                       <h3 className="font-bold text-lg">{currentOrder.customerName}</h3>
                       <p className="text-gray-600 text-sm">{currentOrder.deliveryAddress}</p>
-                      <p className="text-gray-500 text-sm mt-1">📞 {currentOrder.customerPhone}</p>
+                      <p className="text-gray-500 text-sm mt-1"> {currentOrder.customerPhone}</p>
                     </div>
                   </div>
 
@@ -161,7 +158,7 @@ const RiderDashboard = () => {
                         disabled={actionLoading}
                         className="w-full py-3 rounded-xl font-semibold text-orange-600 border-2 border-orange-500 bg-orange-50 hover:bg-orange-100"
                       >
-                        🔢 Enter Pickup OTP from Restaurant
+                         Enter Pickup OTP from Restaurant
                       </button>
                     )}
 
@@ -172,7 +169,7 @@ const RiderDashboard = () => {
                         disabled={actionLoading}
                         className="w-full py-3 rounded-xl font-semibold text-green-600 border-2 border-green-500 bg-green-50 hover:bg-green-100"
                       >
-                        ✅ Enter Delivery OTP from Customer
+                         Enter Delivery OTP from Customer
                       </button>
                     )}
 
@@ -181,7 +178,7 @@ const RiderDashboard = () => {
                       href={`tel:${currentOrder.customerPhone}`}
                       className="block w-full py-3 rounded-xl font-semibold text-blue-600 border-2 border-blue-500 bg-blue-50 text-center"
                     >
-                      📞 Call Customer
+                       Call Customer
                     </a>
                   </div>
                 </div>
@@ -230,11 +227,9 @@ const RiderDashboard = () => {
         );
 
       case 'earnings':
-        console.log('Rendering EarningsTab with:', earnings); // Debug
         return <EarningsTab earnings={earnings} />;
 
       case 'profile':
-        console.log('Rendering ProfileTab with:', profile); // Debug
         return (
           <ProfileTab
             profile={profile}
@@ -263,7 +258,6 @@ const RiderDashboard = () => {
         isOpen={sidebarOpen}
         activeTab={activeTab}
         onTabChange={(tab) => {
-          console.log('Tab changed to:', tab); // Debug
           setActiveTab(tab);
         }}
         onClose={() => setSidebarOpen(false)}
@@ -284,7 +278,7 @@ const RiderDashboard = () => {
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 sm:gap-6 mb-8">
             <StatsCard
               title="Today's Earnings"
-              value={`₹${earnings?.today || 0}`}
+              value={`${earnings?.today || 0}`}
               subtext="Keep it up!"
               icon="Wallet"
               color="green"
@@ -298,7 +292,7 @@ const RiderDashboard = () => {
             />
             <StatsCard
               title="Rating"
-              value={`⭐ ${profile?.rating || '4.8'}`}
+              value={` ${profile?.rating || '4.8'}`}
               subtext="Excellent"
               icon="Star"
               color="orange"

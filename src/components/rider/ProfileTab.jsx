@@ -101,6 +101,7 @@ const ProfileTab = ({ profile, status, onStatusChange, onLocationUpdate }) => {
           <div className="w-20 h-20 bg-gradient-to-br from-orange-400 to-red-400 rounded-full flex items-center justify-center text-white text-3xl font-bold">
             {profile?.name?.charAt(0) || 'R'}
           </div>
+
           <div className="flex-1">
             <h3 className="text-xl font-bold text-gray-900">{profile?.name || 'Rider'}</h3>
             <p className="text-gray-500">{profile?.email}</p>
@@ -112,6 +113,7 @@ const ProfileTab = ({ profile, status, onStatusChange, onLocationUpdate }) => {
               <span className="text-sm text-gray-500">{profile?.vehicleType || 'Bike'}</span>
             </div>
           </div>
+
         </div>
 
         {/* Status Toggle Section */}
@@ -133,6 +135,7 @@ const ProfileTab = ({ profile, status, onStatusChange, onLocationUpdate }) => {
                     : 'border-gray-200 hover:border-gray-300 hover:bg-gray-50'
                 } ${option.disabled ? 'opacity-50 cursor-not-allowed' : ''}`}
               >
+
                 <div className={`w-8 h-8 ${option.color} rounded-lg flex items-center justify-center mb-2`}>
                   <option.icon className="w-4 h-4 text-white" />
                 </div>
@@ -145,7 +148,7 @@ const ProfileTab = ({ profile, status, onStatusChange, onLocationUpdate }) => {
           </div>
           
           <p className="text-xs text-gray-400 mt-3">
-            * Busy status is automatically set when you accept an order
+             Busy status is automatically set when you accept an order
           </p>
         </div>
 
@@ -200,14 +203,17 @@ const ProfileTab = ({ profile, status, onStatusChange, onLocationUpdate }) => {
                   <LocateFixed className={`w-4 h-4 ${locating ? 'animate-spin' : ''}`} />
                   {locating ? 'Getting Location...' : 'Get Current Location'}
                 </button>
+
                 <button
                   onClick={handleSaveLocation}
                   disabled={saving}
                   className="flex-1 py-2.5 bg-gradient-to-r from-orange-500 to-red-500 text-white rounded-xl font-medium hover:from-orange-600 hover:to-red-600 transition-all flex items-center justify-center gap-2 disabled:opacity-50"
                 >
+
                   <Save className={`w-4 h-4 ${saving ? 'animate-pulse' : ''}`} />
                   {saving ? 'Saving...' : 'Save Location'}
                 </button>
+                
               </div>
             </div>
           ) : (

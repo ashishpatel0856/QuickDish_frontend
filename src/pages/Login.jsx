@@ -9,7 +9,6 @@ const Login = () => {
   const navigate = useNavigate();
   const { login, isAuthenticated, user } = useAuth();
   
-  // Refs for inputs to clear them forcefully
   const emailRef = useRef(null);
   const passwordRef = useRef(null);
 
@@ -21,23 +20,19 @@ const Login = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
 
-  // Force clear inputs function
   const clearForm = useCallback(() => {
     setFormData({ email: '', password: '' });
     setShowPassword(false);
     setError('');
     
-    // Force clear input elements
     if (emailRef.current) emailRef.current.value = '';
     if (passwordRef.current) passwordRef.current.value = '';
   }, []);
 
-  // Clear on mount (page refresh)
   useEffect(() => {
     clearForm();
   }, [clearForm]);
 
-  // Handle redirect after login
   useEffect(() => {
     if (isAuthenticated && user) {
       const userRoles = user?.roles || [];
@@ -93,136 +88,129 @@ const Login = () => {
   };
 
   return (
-    <div className="fixed inset-0 w-full h-full overflow-hidden">
-      {/* Background Image */}
+    <div className="relative w-full min-h-screen flex items-center justify-center overflow-hidden">
+      
+      {/* Full Screen Background */}
       <div 
-        className="absolute inset-0 w-full h-full bg-cover bg-center bg-no-repeat bg-fixed"
+        className="fixed inset-0 w-full h-full bg-cover bg-center bg-no-repeat"
         style={{ backgroundImage: `url(${BACKGROUND_IMAGE})` }}
       />
-      
-      {/* Dark Overlay */}
-      <div className="absolute inset-0 bg-gradient-to-br from-black/70 via-black/50 to-black/70 backdrop-blur-sm" />
+
+      {/* Blur Overlay */}
+      <div className="fixed inset-0 bg-black/50 backdrop-blur-sm" />
 
       {/* Content */}
-      <div className="relative z-10 w-full h-full overflow-y-auto flex items-center justify-center p-4 sm:p-6 lg:p-8">
-        <div className="w-full max-w-md">
-          
-          {/* Logo + QuickDish in one row */}
-          <div className="flex items-center justify-center gap-3 mb-6">
-            <div className="w-14 h-14 bg-white/10 backdrop-blur-md rounded-xl flex items-center justify-center border border-white/20 shadow-2xl">
-              <img 
-                src="/QD.png" 
-                alt="QuickDish" 
-                className="h-10 w-auto object-contain"
+      <div className="relative z-10 w-full max-w-md p-6 sm:p-8 rounded-2xl 
+                      bg-white/10 backdrop-blur-xl border border-white/20 
+                      shadow-2xl mx-4">
+
+        {/* Logo and QuickDish */}
+        <div className="flex items-center justify-center gap-3 mb-4">
+          <div className="w-12 h-12 bg-white/20 rounded-xl flex items-center justify-center border border-white/30">
+            <img 
+              src="/QD.png" 
+              alt="QuickDish" 
+              className="h-8 w-auto object-contain"
+            />
+          </div>
+          <h1 className="text-2xl font-bold text-white">QuickDish</h1>
+        </div>
+        
+        <p className="text-center text-white/70 mb-6 text-sm">Delicious food delivered to your doorstep</p>
+
+        {/* Error */}
+        {error && (
+          <div className="mb-6 p-4 bg-red-500/20 border border-red-400/40 rounded-xl text-red-200 text-sm flex items-center gap-2">
+            <span className="w-5 h-5 rounded-full bg-red-400/30 flex items-center justify-center text-xs font-bold">!</span>
+            {error}
+          </div>
+        )}
+
+        <form onSubmit={handleSubmit} className="space-y-5" autoComplete="off">
+          {/* Email */}
+          <div>
+            <label className="block text-sm font-medium text-white/90 mb-2">Email Address</label>
+            <div className="relative">
+              <Mail className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-white/60 pointer-events-none" />
+              <input
+                ref={emailRef}
+                type="email"
+                name="email"
+                value={formData.email}
+                onChange={handleChange}
+                required
+                disabled={loading}
+                autoComplete="new-password"
+                className="w-full pl-12 pr-4 py-3.5 rounded-xl bg-white/20 text-white placeholder-white/50 border border-white/30 focus:ring-2 focus:ring-orange-400 outline-none transition-all text-sm backdrop-blur-sm disabled:opacity-50"
+                placeholder="Enter your email"
               />
             </div>
-            <h1 className="text-3xl font-bold text-white">QuickDish</h1>
           </div>
-          
-          <p className="text-center text-white/80 mb-6">Delicious food delivered to your doorstep</p>
 
-          {/* Login Card */}
-          <div className="bg-white rounded-3xl shadow-2xl p-6 sm:p-8">
-            <div className="text-center mb-6">
-              <h2 className="text-2xl sm:text-3xl font-bold text-gray-900">Welcome Back!</h2>
-              <p className="text-gray-500 mt-2 text-sm sm:text-base">Sign in to your account</p>
-            </div>
-
-            {/* Error */}
-            {error && (
-              <div className="mb-4 p-3 bg-red-50 border border-red-200 rounded-xl text-red-600 text-sm flex items-center gap-2">
-                <span className="w-5 h-5 rounded-full bg-red-100 flex items-center justify-center text-xs font-bold">!</span>
-                {error}
-              </div>
-            )}
-
-            <form onSubmit={handleSubmit} className="space-y-5" autoComplete="off">
-              {/* Email */}
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">Email Address</label>
-                <div className="relative">
-                  <Mail className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
-                  <input
-                    ref={emailRef}
-                    type="email"
-                    name="email"
-                    value={formData.email}
-                    onChange={handleChange}
-                    required
-                    disabled={loading}
-                    autoComplete="new-password"
-                    className="w-full pl-12 pr-4 py-3.5 border border-gray-200 rounded-xl focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-all text-sm bg-gray-50 focus:bg-white disabled:opacity-50"
-                    placeholder="Enter your email"
-                  />
-                </div>
-              </div>
-
-              {/* Password */}
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">Password</label>
-                <div className="relative">
-                  <Lock className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
-                  <input
-                    ref={passwordRef}
-                    type={showPassword ? 'text' : 'password'}
-                    name="password"
-                    value={formData.password}
-                    onChange={handleChange}
-                    required
-                    disabled={loading}
-                    autoComplete="new-password"
-                    className="w-full pl-12 pr-12 py-3.5 border border-gray-200 rounded-xl focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-all text-sm bg-gray-50 focus:bg-white disabled:opacity-50"
-                    placeholder="Enter your password"
-                  />
-                  <button
-                    type="button"
-                    onClick={() => setShowPassword(!showPassword)}
-                    disabled={loading}
-                    className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600"
-                  >
-                    {showPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
-                  </button>
-                </div>
-              </div>
-
-              {/* Remember & Forgot */}
-              <div className="flex items-center justify-between">
-                <label className="flex items-center cursor-pointer">
-                  <input type="checkbox" className="w-4 h-4 text-orange-500 border-gray-300 rounded focus:ring-orange-500" />
-                  <span className="ml-2 text-sm text-gray-600">Remember me</span>
-                </label>
-                <Link to="/forgot-password" className="text-sm text-orange-600 hover:text-orange-700 font-medium">
-                  Forgot Password?
-                </Link>
-              </div>
-
-              {/* Submit */}
-              <button
-                type="submit"
+          {/* Password */}
+          <div>
+            <label className="block text-sm font-medium text-white/90 mb-2">Password</label>
+            <div className="relative">
+              <Lock className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-white/60 pointer-events-none" />
+              <input
+                ref={passwordRef}
+                type={showPassword ? 'text' : 'password'}
+                name="password"
+                value={formData.password}
+                onChange={handleChange}
+                required
                 disabled={loading}
-                className="w-full py-4 bg-gradient-to-r from-orange-500 to-red-500 text-white rounded-xl font-semibold hover:from-orange-600 hover:to-red-600 focus:ring-4 focus:ring-orange-500/30 transition-all disabled:opacity-50 flex items-center justify-center gap-2 shadow-lg"
+                autoComplete="new-password"
+                className="w-full pl-12 pr-12 py-3.5 rounded-xl bg-white/20 text-white placeholder-white/50 border border-white/30 focus:ring-2 focus:ring-orange-400 outline-none transition-all text-sm backdrop-blur-sm disabled:opacity-50"
+                placeholder="Enter your password"
+              />
+              <button
+                type="button"
+                onClick={() => setShowPassword(!showPassword)}
+                disabled={loading}
+                className="absolute right-4 top-1/2 -translate-y-1/2 text-white/60 hover:text-white transition-colors"
               >
-                {loading ? (
-                  <><Loader2 className="w-5 h-5 animate-spin" /><span>Signing in...</span></>
-                ) : (
-                  <span>Sign In</span>
-                )}
+                {showPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
               </button>
-            </form>
-
-            {/* Sign Up */}
-            <div className="mt-6 text-center">
-              <p className="text-gray-600 text-sm">
-                Don't have an account?{' '}
-                <Link to="/signup" className="text-orange-600 font-semibold hover:text-orange-700">
-                  Sign Up
-                </Link>
-              </p>
             </div>
           </div>
 
-          <p className="text-center text-white/60 text-sm mt-6">© 2024 QuickDish</p>
+          {/* Remember & Forgot */}
+          <div className="flex items-center justify-between">
+            <label className="flex items-center cursor-pointer">
+              <input type="checkbox" className="w-4 h-4 text-orange-500 border-white/30 rounded bg-white/20 focus:ring-orange-400 focus:ring-offset-0" />
+              <span className="ml-2 text-sm text-white/80">Remember me</span>
+            </label>
+            <Link to="/forgot-password" className="text-sm text-orange-400 hover:text-orange-300 font-medium">
+              Forgot Password?
+            </Link>
+          </div>
+
+          {/* Submit */}
+          <button
+            type="submit"
+            disabled={loading}
+            className="w-full py-3.5 rounded-xl bg-gradient-to-r from-orange-500 to-orange-600 text-white font-semibold hover:from-orange-600 hover:to-orange-700 focus:ring-4 focus:ring-orange-500/30 transition-all disabled:opacity-50 flex items-center justify-center gap-2 shadow-lg shadow-orange-500/30"
+          >
+            {loading ? (
+              <><Loader2 className="w-5 h-5 animate-spin" /><span>Signing in...</span></>
+            ) : (
+              <span>Login</span>
+            )}
+          </button>
+        </form>
+
+        {/* Sign Up */}
+        <div className="mt-6 text-center">
+          <p className="text-white/80 text-sm">
+            Don't have an account?{' '}
+            <Link to="/signup" className="text-orange-400 font-semibold hover:text-orange-300">
+              Sign Up
+            </Link>
+          </p>
         </div>
+
+        <p className="text-center text-white/50 text-xs mt-6">© 2026 QuickDish</p>
       </div>
     </div>
   );

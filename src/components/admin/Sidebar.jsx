@@ -84,7 +84,7 @@ const Sidebar = ({ activeTab, onTabChange, isOpen, onClose, stats, onLogout }) =
             icon={Store}
             label="Pending Owners"
             count={stats.pendingOwners}
-            activeClass="bg-purple-50 text-purple-600 border border-purple-200"
+            activeClass="bg-orange-50 text-orange-600 border border-orange-200"
           />
 
           <TabButton
