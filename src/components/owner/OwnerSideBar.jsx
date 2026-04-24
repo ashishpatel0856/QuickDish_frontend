@@ -37,7 +37,6 @@ const OwnerSidebar = () => {
           onClick={logout}
           className="flex items-center space-x-3 p-3 rounded-lg text-red-600 hover:bg-red-50 w-full mt-8"
         >
-          <span>🚪</span>
           <span className="font-medium">Logout</span>
         </button>
       </nav>

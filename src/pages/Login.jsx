@@ -210,7 +210,7 @@ const Login = () => {
           </p>
         </div>
 
-        <p className="text-center text-white/50 text-xs mt-6">© 2026 QuickDish</p>
+        <p className="text-center text-white/50 text-xs mt-6">@2026 QuickDish</p>
       </div>
     </div>
   );

@@ -1,8 +1,7 @@
 import { useState, useEffect, useCallback, useRef } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
-import { 
-  User, Mail, Lock, Eye, EyeOff, Phone, Store, 
+import {  User, Mail, Lock, Eye, EyeOff, Phone, Store, 
   Bike, CheckCircle2, Loader2, ChevronRight, ChevronLeft,
   ShieldCheck, FileText, CreditCard
 } from 'lucide-react';
@@ -18,16 +17,18 @@ const Signup = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
 
-  // Form state - properly initialized
   const [formData, setFormData] = useState({
     name: '',
     email: '',
     password: '',
     phone: '',
+
     role: 'ROLE_CUSTOMER',
+
     vehicleType: '',
     licenseNumber: '',
     vehicleNumber: '',
+
     gstNumber: '',
     panNumber: '',
     fssaiLicense: '',
@@ -38,7 +39,7 @@ const Signup = () => {
     bankName: ''
   });
 
-  // Clear form on mount
+  // Clear or reset form on mount
   useEffect(() => {
     setFormData({
       name: '',
@@ -60,7 +61,7 @@ const Signup = () => {
     });
   }, []);
 
-  // FIXED: Proper handleChange without event pooling issues
+
   const handleChange = useCallback((e) => {
     const { name, value } = e.target;
     setFormData(prev => ({
@@ -69,6 +70,7 @@ const Signup = () => {
     }));
     setError('');
   }, []);
+
 
   const validateStep1 = () => {
     if (!formData.name || !formData.email || !formData.password || !formData.phone) {
@@ -81,6 +83,7 @@ const Signup = () => {
     }
     return true;
   };
+
 
   const validateStep2 = () => {
     if (formData.role === 'ROLE_RIDER') {
@@ -117,7 +120,6 @@ const Signup = () => {
   const handleSubmit = async () => {
     setLoading(true);
     setError('');
-
     try {
       let submitData = {
         name: formData.name,
@@ -149,7 +151,6 @@ const Signup = () => {
           bankName: formData.bankName || ''
         };
       }
-
       const result = await signup(submitData);
 
       if (result.success) {
@@ -164,18 +165,19 @@ const Signup = () => {
         setError(result.error || 'Signup failed. Please try again.');
       }
     } catch (err) {
-      setError('Network error. Please try again.');
+      setError(' Please try again.');
     } finally {
       setLoading(false);
     }
   };
+
+
 
   const isCustomer = formData.role === 'ROLE_CUSTOMER';
   const isRider = formData.role === 'ROLE_RIDER';
   const isOwner = formData.role === 'ROLE_RESTAURANT_OWNER';
   const progress = currentStep === 1 ? 50 : 100;
 
-  //  Direct input rendering without complex wrapper
   const renderInput = (name, type = 'text', placeholder, required = false, Icon = null) => (
     <div className="relative">
       {Icon && <Icon className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400 pointer-events-none" />}
@@ -196,7 +198,7 @@ const Signup = () => {
   return (
     <div className="relative w-full min-h-screen flex items-center justify-center overflow-hidden">
       
-      {/* Full Screen Background */}
+      {/*  Background */}
       <div 
         className="fixed inset-0 w-full h-full bg-cover bg-center bg-no-repeat"
         style={{ backgroundImage: `url(${BACKGROUND_IMAGE})` }}
@@ -210,7 +212,7 @@ const Signup = () => {
                       bg-white/10 backdrop-blur-xl border border-white/20 
                       shadow-2xl mx-4 max-h-[90vh] overflow-y-auto">
 
-        {/* Logo + QuickDish */}
+        {/* Logo and QuickDish */}
         <div className="flex items-center justify-center gap-3 mb-4">
           <div className="w-12 h-12 bg-white/20 rounded-xl flex items-center justify-center border border-white/30">
             <img 
@@ -224,7 +226,7 @@ const Signup = () => {
         
         <p className="text-center text-white/70 mb-6 text-sm">Join India's fastest growing food delivery platform</p>
 
-        {/* Progress */}
+        {/* steps */}
         <div className="mb-6">
           <div className="flex justify-between text-sm font-medium text-white/90 mb-2">
             <span>Step {currentStep} of 2</span>
@@ -246,7 +248,7 @@ const Signup = () => {
           </div>
         )}
 
-        {/* Step 1: Basic Info */}
+        {/* Step 1 Basic Info */}
         {currentStep === 1 && (
           <div className="space-y-5">
             <div className="text-center mb-6">
@@ -348,7 +350,7 @@ const Signup = () => {
           </div>
         )}
 
-        {/* Step 2: Role Specific */}
+        {/* Step 2 Role Specific */}
         {currentStep === 2 && (
           <div className="space-y-5">
             <button 
@@ -520,7 +522,7 @@ const Signup = () => {
         {/* Footer */}
         <div className="mt-6 text-center space-y-2">
           <p className="text-white/80 text-sm">
-            Already have an account?{' '}
+            Already have an account?
             <Link to="/login" className="text-orange-400 font-semibold hover:text-orange-300">
               Login
             </Link>

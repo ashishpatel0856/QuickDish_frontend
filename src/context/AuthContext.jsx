@@ -25,7 +25,6 @@ export const AuthProvider = ({ children }) => {
           api.defaults.headers.common['Authorization'] = `Bearer ${token}`;
           setUser(JSON.parse(storedUser));
           setIsAuthenticated(true);
-          console.log(' Auth initialized from localStorage');
         } else {
           console.log(' No valid auth data in localStorage');
         }
@@ -45,8 +44,6 @@ export const AuthProvider = ({ children }) => {
     const response = await authAPI.login(credentials);
     
     const responseData = response.data?.data || response.data;
-    console.log(' Login response:', responseData);
-
     const { accessToken, refreshToken, ...userData } = responseData;
 
     if (!accessToken || accessToken === 'undefined') {
@@ -86,7 +83,6 @@ export const AuthProvider = ({ children }) => {
       const response = await authAPI.verifyOTP(otpData);
       return { success: true, data: response.data };
     } catch (error) {
-      console.error(' OTP verification error:', error);
       return { 
         success: false, 
         error: error.response?.data?.message || 'OTP verification failed' 

@@ -2,7 +2,14 @@ import { useState, useEffect, useCallback, useRef } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
 import { useCart } from "../../context/CartContext";
-import {Search,MapPin,ChevronDown,ShoppingCart, HelpCircle,User,LogOut,LayoutDashboard,Menu,X,Home,UtensilsCrossed,Heart,ClipboardList,} from "lucide-react";
+import { useAi } from "../../context/AiContext";
+import {
+  Search, MapPin, ChevronDown, ShoppingCart, HelpCircle,
+  User, LogOut, LayoutDashboard, Menu, X, Home,
+  UtensilsCrossed, Heart, ClipboardList,
+} from "lucide-react";
+import AiChatButton from "../ai/AiChatButton";
+import AiChatModal from "../ai/AiChatModal";
 
 // Custom hook for detecting clicks outside
 const useClickOutside = (ref, callback) => {
@@ -21,6 +28,7 @@ const Navbar = () => {
   const { isAuthenticated, user, logout } = useAuth();
   const navigate = useNavigate();
   const { cartCount } = useCart();
+  const { isChatOpen } = useAi();
 
   // State
   const [showDropdown, setShowDropdown] = useState(false);
@@ -39,7 +47,6 @@ const Navbar = () => {
   const userRoles = user?.roles || [];
   const isOwner = userRoles.includes("ROLE_RESTAURANT_OWNER");
 
-  // Scroll effect
   useEffect(() => {
     const handleScroll = () => setScrolled(window.scrollY > 10);
     window.addEventListener("scroll", handleScroll);
@@ -64,16 +71,12 @@ const Navbar = () => {
     };
   }, [mobileMenuOpen]);
 
-
-
   const handleLogout = useCallback(() => {
     logout();
     setShowDropdown(false);
     setMobileMenuOpen(false);
     navigate("/login");
   }, [logout, navigate]);
-
-
 
   const detectLocation = useCallback(() => {
     if (!navigator.geolocation) {
@@ -110,8 +113,6 @@ const Navbar = () => {
     );
   }, []);
 
-
-
   const navLinks = [
     { to: "/", icon: Home, label: "Home" },
     { to: "/restaurants", icon: UtensilsCrossed, label: "Restaurants" },
@@ -133,15 +134,16 @@ const Navbar = () => {
             {/*  Logo + Location */}
             <div className="flex items-center gap-4 lg:gap-8">
               {/* Logo */}
-              
               <Link 
                 to="/" 
-                className="flex items-center gap-2 group "
-                onClick={() => setMobileMenuOpen(false)} >
+                className="flex items-center gap-2 group"
+                onClick={() => setMobileMenuOpen(false)} 
+              >
                 <img 
                   src="/QD.png" 
                   alt="QuickDish" 
-                  className="h-8 w-auto object-contain group-hover:scale-105 transition-transform"/>
+                  className="h-8 w-auto object-contain group-hover:scale-105 transition-transform"
+                />
                 <span className="text-xl lg:text-2xl font-bold text-orange-500 tracking-tight hidden sm:block group-hover:text-orange-600 transition-colors">
                   QuickDish
                 </span>
@@ -152,8 +154,8 @@ const Navbar = () => {
                 <div className="relative hidden lg:block" ref={locationRef}>
                   <button
                     onClick={() => setShowLocationDropdown(!showLocationDropdown)}
-                    className="flex items-center gap-2 text-gray-700 hover:text-orange-500 transition-colors">
-
+                    className="flex items-center gap-2 text-gray-700 hover:text-orange-500 transition-colors"
+                  >
                     <MapPin className="w-5 h-5 text-orange-500" />
                     <div className="flex flex-col items-start">
                       <span className="text-xs font-medium text-gray-500">Deliver to</span>
@@ -207,8 +209,15 @@ const Navbar = () => {
             )}
 
             {/*  Actions */}
-            <div className="flex items-center gap-2 lg:gap-6">
-              {/* Help  Desktop */}
+            <div className="flex items-center gap-2 lg:gap-4">
+              {/* AI Chat Button*/}
+              {isAuthenticated && (
+                <div className="hidden lg:block">
+                  <AiChatButton />
+                </div>
+              )}
+
+              {/* Help Desktop */}
               <Link
                 to="/help"
                 className="hidden lg:flex items-center gap-2 text-gray-700 hover:text-orange-500 font-medium transition-colors"
@@ -221,7 +230,8 @@ const Navbar = () => {
               {isAuthenticated && (
                 <Link
                   to="/cart"
-                  className="flex items-center gap-1 lg:gap-2 text-gray-700 hover:text-orange-500 font-medium transition-colors relative">
+                  className="flex items-center gap-1 lg:gap-2 text-gray-700 hover:text-orange-500 font-medium transition-colors relative"
+                >
                   <div className="relative">
                     <ShoppingCart className="w-6 h-6" />
                     {cartCount > 0 && (
@@ -329,6 +339,9 @@ const Navbar = () => {
         </div>
       </nav>
 
+      {/* AI Chat Modal */}
+      <AiChatModal />
+
       {/* Mobile Menu Overlay */}
       {mobileMenuOpen && (
         <div 
@@ -361,6 +374,29 @@ const Navbar = () => {
               <X className="w-6 h-6 text-gray-700" />
             </button>
           </div>
+
+          {/* Mobile AI Chat Section - NEW */}
+          {isAuthenticated && (
+            <div className="p-4 border-b border-gray-100 bg-gradient-to-r from-orange-50 to-orange-100/50">
+              <button
+                onClick={() => {
+                  setMobileMenuOpen(false);
+                  // Open AI chat
+                  const { openChat } = require('../../context/AiContext').useAi();
+                  openChat();
+                }}
+                className="flex items-center gap-3 w-full px-4 py-3 rounded-xl bg-white shadow-sm border border-orange-200 hover:shadow-md transition-all"
+              >
+                <div className="w-10 h-10 bg-gradient-to-br from-orange-400 to-orange-600 rounded-full flex items-center justify-center">
+                  <span className="text-white text-lg">🤖</span>
+                </div>
+                <div className="text-left">
+                  <p className="font-bold text-gray-800">QuickDish AI</p>
+                  <p className="text-xs text-gray-500">Ask me anything about food!</p>
+                </div>
+              </button>
+            </div>
+          )}
 
           {/* Mobile Search */}
           {isAuthenticated && (
