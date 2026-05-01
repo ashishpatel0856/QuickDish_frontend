@@ -1,7 +1,6 @@
 import api from "../services/api";
 
 export const aiAPI = {
-
     chat: (message, sessionId = null) => {
     const userId = localStorage.getItem('userId');
     return api.post('/ai/chat', {

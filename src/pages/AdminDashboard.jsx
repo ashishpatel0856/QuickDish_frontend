@@ -141,7 +141,7 @@ const AdminDashboard = () => {
             )}
             <StatCard
               title="Platform Earnings"
-              value={`₹${stats.totalEarnings.toLocaleString()}`}
+              value={`${stats.totalEarnings.toLocaleString()}`}
               icon="DollarSign"
               color="bg-red-500"
               trend="+23%"
