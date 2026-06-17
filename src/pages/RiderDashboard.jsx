@@ -8,6 +8,9 @@ import OtpModal from '../components/rider/OtpModal';
 import EarningsTab from '../components/rider/EarningsTab';
 import ProfileTab from '../components/rider/ProfileTab';
 import AvailableOrders from '../components/rider/AvailableOrders';
+import { IndianRupeeIcon } from 'lucide-react';
+import { FaStore } from "react-icons/fa";
+import { HiOutlineHome } from "react-icons/hi2";
 
 const STATUS = {
   OFFLINE: 'OFFLINE',
@@ -82,8 +85,10 @@ const RiderDashboard = () => {
                         {currentOrder.status === 'ON_THE_WAY' && ' Arrived at Customer'}
                       </h2>
                     </div>
-                    <div className="text-right">
-                      <p className="text-2xl font-bold">₹{currentOrder.totalAmount}</p>
+                    <div className="text-right ">
+                      <p className="text-2xl font-bold flex">
+                        <IndianRupeeIcon className='mt-2' />
+                        {currentOrder.totalAmount}</p>
                     </div>
                   </div>
                 </div>
@@ -111,8 +116,9 @@ const RiderDashboard = () => {
 
                   {/* Restaurant Info */}
                   <div className="flex items-start gap-4 mb-4">
-                    <div className="w-12 h-12 bg-orange-100 rounded-full flex items-center justify-center text-2xl">
-                      🏪
+                    <div className="w-12 h-12 bg-orange-100 rounded-full flex items-center justify-center">
+
+                      <FaStore className="text-2xl text-orange-600" />
                     </div>
                     <div className="flex-1">
                       <h3 className="font-bold text-lg">{currentOrder.restaurantName}</h3>
@@ -122,8 +128,8 @@ const RiderDashboard = () => {
 
                   {/* Customer Info */}
                   <div className="flex items-start gap-4 mb-6">
-                    <div className="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center text-2xl">
-                      🏠
+                    <div className="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center">
+                      <HiOutlineHome className="text-2xl text-blue-600" />
                     </div>
                     <div className="flex-1">
                       <h3 className="font-bold text-lg">{currentOrder.customerName}</h3>
@@ -139,13 +145,11 @@ const RiderDashboard = () => {
                       <button
                         onClick={currentAction.action}
                         disabled={actionLoading}
-                        className={`w-full py-4 rounded-xl font-bold text-white text-lg shadow-lg ${
-                          actionLoading ? 'opacity-50 cursor-not-allowed' : ''
-                        } ${
-                          currentAction.color === 'orange' 
-                            ? 'bg-gradient-to-r from-orange-500 to-red-500' 
+                        className={`w-full py-4 rounded-xl font-bold text-white text-lg shadow-lg ${actionLoading ? 'opacity-50 cursor-not-allowed' : ''
+                          } ${currentAction.color === 'orange'
+                            ? 'bg-gradient-to-r from-orange-500 to-red-500'
                             : 'bg-gradient-to-r from-blue-500 to-blue-600'
-                        }`}
+                          }`}
                       >
                         {actionLoading ? 'Processing...' : currentAction.label}
                       </button>
@@ -158,7 +162,7 @@ const RiderDashboard = () => {
                         disabled={actionLoading}
                         className="w-full py-3 rounded-xl font-semibold text-orange-600 border-2 border-orange-500 bg-orange-50 hover:bg-orange-100"
                       >
-                         Enter Pickup OTP from Restaurant
+                        Enter Pickup OTP from Restaurant
                       </button>
                     )}
 
@@ -169,7 +173,7 @@ const RiderDashboard = () => {
                         disabled={actionLoading}
                         className="w-full py-3 rounded-xl font-semibold text-green-600 border-2 border-green-500 bg-green-50 hover:bg-green-100"
                       >
-                         Enter Delivery OTP from Customer
+                        Enter Delivery OTP from Customer
                       </button>
                     )}
 
@@ -178,7 +182,7 @@ const RiderDashboard = () => {
                       href={`tel:${currentOrder.customerPhone}`}
                       className="block w-full py-3 rounded-xl font-semibold text-blue-600 border-2 border-blue-500 bg-blue-50 text-center"
                     >
-                       Call Customer
+                      Call Customer
                     </a>
                   </div>
                 </div>
@@ -202,7 +206,9 @@ const RiderDashboard = () => {
                           <h3 className="font-bold">{order.restaurantName}</h3>
                           <p className="text-sm text-gray-600">{order.restaurantAddress}</p>
                         </div>
-                        <span className="text-lg font-bold text-orange-600">₹{order.totalAmount}</span>
+                        <span className="text-lg font-bold text-orange-600 flex">
+                          <IndianRupeeIcon size={18} className='mt-2' />
+                          {order.totalAmount}</span>
                       </div>
                       <div className="flex justify-between items-center mt-4">
                         <div className="text-sm text-gray-500">

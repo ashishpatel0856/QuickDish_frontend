@@ -27,7 +27,7 @@ export const CartProvider = ({ children }) => {
   useEffect(() => {
     if (skipNextLoad.current) {
       skipNextLoad.current = false;
-      console.log("⏭️ Skipping loadCart due to clearCart");
+      console.log("Skipping loadCart due to clearCart");
       return;
     }
     

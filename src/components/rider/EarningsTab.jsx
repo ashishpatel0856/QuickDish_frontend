@@ -1,4 +1,4 @@
-import { Wallet, Calendar, TrendingUp } from 'lucide-react';
+import { Wallet, Calendar, TrendingUp, IndianRupeeIcon } from 'lucide-react';
 
 const EarningsTab = ({ earnings }) => {
   console.log('EarningsTab rendered with:', earnings); 
@@ -54,7 +54,9 @@ const EarningsTab = ({ earnings }) => {
                   <p className="text-sm text-gray-500">{item.subtext}</p>
                 </div>
               </div>
-              <span className="text-xl font-bold text-gray-900">₹{item.value}</span>
+              <span className="text-xl font-bold  text-gray-900 flex">
+                <IndianRupeeIcon size={15} className='mt-2'/>
+                {item.value}</span>
             </div>
           ))}
         </div>
