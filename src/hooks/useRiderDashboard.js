@@ -43,24 +43,55 @@ export const useRiderDashboard = () => {
 
 
   const fetchEarnings = useCallback(async () => {
-  try {
-    console.log('Fetching earnings...');
-    const { data } = await riderAPI.getTodayEarnings();
-    console.log('Earnings data:', data);
-    if (data) {
-      setEarnings({
-        today: data.totalEarnings || 0,
-        week: 0, 
-        total: 0
-      });
+    try {
+      console.log('🚀 Fetching earnings...');
+      const response = await riderAPI.getTodayEarnings();
+      console.log('📦 Full API response:', response);
+      
+      // Handle nested response structure
+      let earningsData = response?.data;
+      
+      // If response.data has nested data (Spring Boot style)
+      if (earningsData?.data) {
+        earningsData = earningsData.data;
+      }
+      
+      console.log('📊Extracted earnings data:', earningsData);
+      
+      if (earningsData) {
+        // Try multiple possible field names
+        const todayEarnings = 
+          earningsData.totalEarnings || 
+          earningsData.amount || 
+          earningsData.today || 
+          earningsData.earnings || 
+          0;
+        
+        const weekEarnings = 
+          earningsData.weekEarnings || 
+          earningsData.week || 
+          0;
+        
+        const totalEarnings = 
+          earningsData.totalEarnings || 
+          earningsData.total || 
+          todayEarnings;
+        
+        console.log(' Parsed values:', { todayEarnings, weekEarnings, totalEarnings });
+        
+        setEarnings({
+          today: todayEarnings,
+          week: weekEarnings, 
+          total: totalEarnings
+        });
+      } else {
+        console.warn(' No earnings data in response');
+      }
+    } catch (err) {
+      console.error(' Earnings fetch error:', err);
+      console.error('Error response:', err.response?.data);
     }
-  } catch (err) {
-    console.error('Earnings fetch error:', err);
-    console.error('Error response:', err.response);
-  }
-}, []);
-
-
+  }, []);
 
   const fetchCurrentOrder = useCallback(async () => {
     try {
@@ -308,6 +339,7 @@ export const useRiderDashboard = () => {
     handleDeliver,
     getCurrentAction,
     logout,
-    STATUS
+    STATUS,
+    fetchEarnings 
   };
 };

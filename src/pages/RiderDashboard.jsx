@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useRiderDashboard } from '../hooks/useRiderDashboard';
 import Sidebar from '../components/rider/Sidebar';
 import StatsCard from '../components/rider/StatsCard';
@@ -41,12 +41,21 @@ const RiderDashboard = () => {
     handlePickup,
     handleDeliver,
     getCurrentAction,
-    logout
+    logout,
+    fetchEarnings,
   } = useRiderDashboard();
+
+  useEffect(() => {
+    if (!loading && activeTab === 'earnings') {
+      console.log(' Earnings tab active, fetching data...');
+      fetchEarnings();
+    }
+  }, [activeTab, fetchEarnings, loading]);
 
   if (loading) return <LoadingScreen text="Loading dashboard..." />;
 
   const currentAction = getCurrentAction();
+
 
   const onOtpSubmit = async () => {
     if (otpType === 'pickup') {
@@ -93,65 +102,87 @@ const RiderDashboard = () => {
                   </div>
                 </div>
 
-                <div className="p-6">
-                  {/* OTP Display */}
-                  <div className="bg-gray-50 rounded-xl p-4 mb-6">
-                    <div className="grid grid-cols-2 gap-4">
-                      <div className="text-center bg-orange-50 rounded-lg p-3">
-                        <p className="text-xs text-orange-600 font-bold mb-1">PICKUP OTP</p>
-                        <p className="text-2xl font-bold text-orange-700 tracking-widest">
+                <div className="p-4 sm:p-5">
+                  {/* OTP Display - Compact Real-World Style */}
+                  <div className="bg-gray-50 rounded-2xl p-3 sm:p-4 mb-5 border border-gray-100">
+                    <div className="grid grid-cols-2 gap-3">
+                      {/* Pickup OTP */}
+                      <div className="text-center bg-orange-50 rounded-xl p-2.5 sm:p-3 relative overflow-hidden">
+                        <div className="absolute top-0 left-0 w-full h-1 bg-orange-400"></div>
+                        <p className="text-[10px] sm:text-xs text-orange-600 font-bold uppercase tracking-wider mb-1.5">
+                          Pickup OTP
+                        </p>
+                        <p className="text-xl sm:text-2xl font-black text-orange-700 tracking-[0.25em] font-mono">
                           {currentOrder.pickupOtp}
                         </p>
-                        <p className="text-xs text-orange-600 mt-1">Tell restaurant</p>
+                        <p className="text-[10px] text-orange-500 mt-1 font-medium">Show at restaurant</p>
                       </div>
-                      <div className="text-center bg-green-50 rounded-lg p-3">
-                        <p className="text-xs text-green-600 font-bold mb-1">DELIVERY OTP</p>
-                        <p className="text-2xl font-bold text-green-700 tracking-widest">
+
+                      {/* Delivery OTP */}
+                      <div className="text-center bg-green-50 rounded-xl p-2.5 sm:p-3 relative overflow-hidden">
+                        <div className="absolute top-0 left-0 w-full h-1 bg-green-400"></div>
+                        <p className="text-[10px] sm:text-xs text-green-600 font-bold uppercase tracking-wider mb-1.5">
+                          Delivery OTP
+                        </p>
+                        <p className="text-xl sm:text-2xl font-black text-green-700 tracking-[0.25em] font-mono">
                           {currentOrder.deliveryOtp}
                         </p>
-                        <p className="text-xs text-green-600 mt-1">Ask customer</p>
+                        <p className="text-[10px] text-green-500 mt-1 font-medium">Ask from customer</p>
                       </div>
                     </div>
                   </div>
 
-                  {/* Restaurant Info */}
-                  <div className="flex items-start gap-4 mb-4">
-                    <div className="w-12 h-12 bg-orange-100 rounded-full flex items-center justify-center">
-
-                      <FaStore className="text-2xl text-orange-600" />
+                  {/* Restaurant Info - Compact */}
+                  <div className="flex items-center gap-3 mb-4">
+                    <div className="w-10 h-10 bg-orange-100 rounded-full flex items-center justify-center shrink-0">
+                      <FaStore className="text-lg text-orange-600" />
                     </div>
-                    <div className="flex-1">
-                      <h3 className="font-bold text-lg">{currentOrder.restaurantName}</h3>
-                      <p className="text-gray-600 text-sm">{currentOrder.restaurantAddress}</p>
-                    </div>
-                  </div>
-
-                  {/* Customer Info */}
-                  <div className="flex items-start gap-4 mb-6">
-                    <div className="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center">
-                      <HiOutlineHome className="text-2xl text-blue-600" />
-                    </div>
-                    <div className="flex-1">
-                      <h3 className="font-bold text-lg">{currentOrder.customerName}</h3>
-                      <p className="text-gray-600 text-sm">{currentOrder.deliveryAddress}</p>
-                      <p className="text-gray-500 text-sm mt-1"> {currentOrder.customerPhone}</p>
+                    <div className="flex-1 min-w-0">
+                      <h3 className="font-bold text-sm sm:text-base text-gray-900 truncate">
+                        {currentOrder.restaurantName}
+                      </h3>
+                      <p className="text-gray-500 text-xs truncate">{currentOrder.restaurantAddress}</p>
                     </div>
                   </div>
 
-                  {/* ACTION BUTTONS */}
-                  <div className="space-y-3">
+                  {/* Customer Info - Compact */}
+                  <div className="flex items-center gap-3 mb-5">
+                    <div className="w-10 h-10 bg-blue-100 rounded-full flex items-center justify-center shrink-0">
+                      <HiOutlineHome className="text-lg text-blue-600" />
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <h3 className="font-bold text-sm sm:text-base text-gray-900 truncate">
+                        {currentOrder.customerName}
+                      </h3>
+                      <p className="text-gray-500 text-xs truncate">{currentOrder.deliveryAddress}</p>
+                      <p className="text-gray-400 text-xs mt-0.5">{currentOrder.customerPhone}</p>
+                    </div>
+                  </div>
+
+                  {/* Action Buttons */}
+                  <div className="space-y-2.5">
                     {/* Main Action Button */}
                     {currentAction && (
                       <button
                         onClick={currentAction.action}
                         disabled={actionLoading}
-                        className={`w-full py-4 rounded-xl font-bold text-white text-lg shadow-lg ${actionLoading ? 'opacity-50 cursor-not-allowed' : ''
+                        className={`w-full py-3 sm:py-3.5 rounded-xl font-bold text-white text-sm sm:text-base shadow-md active:scale-[0.98] transition-transform ${actionLoading ? 'opacity-50 cursor-not-allowed' : ''
                           } ${currentAction.color === 'orange'
                             ? 'bg-gradient-to-r from-orange-500 to-red-500'
                             : 'bg-gradient-to-r from-blue-500 to-blue-600'
                           }`}
                       >
-                        {actionLoading ? 'Processing...' : currentAction.label}
+                        {actionLoading ? (
+                          <span className="flex items-center justify-center gap-2">
+                            <svg className="animate-spin h-4 w-4" viewBox="0 0 24 24">
+                              <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" fill="none" />
+                              <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
+                            </svg>
+                            Processing...
+                          </span>
+                        ) : (
+                          currentAction.label
+                        )}
                       </button>
                     )}
 
@@ -160,9 +191,9 @@ const RiderDashboard = () => {
                       <button
                         onClick={() => openOtpModal('pickup')}
                         disabled={actionLoading}
-                        className="w-full py-3 rounded-xl font-semibold text-orange-600 border-2 border-orange-500 bg-orange-50 hover:bg-orange-100"
+                        className="w-full py-2.5 sm:py-3 rounded-xl font-semibold text-orange-600 text-sm border-2 border-orange-400 bg-orange-50 hover:bg-orange-100 active:scale-[0.98] transition-all"
                       >
-                        Enter Pickup OTP from Restaurant
+                        Enter Pickup OTP
                       </button>
                     )}
 
@@ -171,18 +202,23 @@ const RiderDashboard = () => {
                       <button
                         onClick={() => openOtpModal('deliver')}
                         disabled={actionLoading}
-                        className="w-full py-3 rounded-xl font-semibold text-green-600 border-2 border-green-500 bg-green-50 hover:bg-green-100"
+                        className="w-full py-2.5 sm:py-3 rounded-xl font-semibold text-green-600 text-sm border-2 border-green-400 bg-green-50 hover:bg-green-100 active:scale-[0.98] transition-all"
                       >
-                        Enter Delivery OTP from Customer
+                        Enter Delivery OTP
                       </button>
                     )}
 
                     {/* Call Button */}
                     <a
                       href={`tel:${currentOrder.customerPhone}`}
-                      className="block w-full py-3 rounded-xl font-semibold text-blue-600 border-2 border-blue-500 bg-blue-50 text-center"
+                      className="block w-full py-2.5 sm:py-3 rounded-xl font-semibold text-blue-600 text-sm border-2 border-blue-400 bg-blue-50 text-center hover:bg-blue-100 active:scale-[0.98] transition-all"
                     >
-                      Call Customer
+                      <span className="flex items-center justify-center gap-2">
+                        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" />
+                        </svg>
+                        Call Customer
+                      </span>
                     </a>
                   </div>
                 </div>
