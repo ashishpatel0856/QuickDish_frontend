@@ -28,7 +28,7 @@ import OwnerMenu from './components/owner/Menu';
 import OwnerOrders from './components/owner/Orders';
 import RiderDashboard from './pages/RiderDashboard';
 import AdminDashboard from './pages/AdminDashboard';
-import VerifyOTP from './pages/VerifyOtp';
+import VerifyOTP from './pages/VerifyOTP';
 import AdminProfile from './pages/AdminProfile';
 
 const PageLoader = () => (
